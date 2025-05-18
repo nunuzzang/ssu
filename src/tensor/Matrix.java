@@ -120,14 +120,14 @@ public interface Matrix {
     boolean isZero();
 
     //45
-    Matrix rowSwap(int row1, int row2);
+    void rowSwap(int row1, int row2);
 
     //46
-    Matrix colSwap(int col1, int col2);
+    void colSwap(int col1, int col2);
 
     //47
-    Matrix rowMultiply(int index, Scalar val);
+    void rowMultiply(int index, Scalar val);
 
     //48
-    Matrix colMultiply(int index, Scalar val);
+    void colMultiply(int index, Scalar val);
 }

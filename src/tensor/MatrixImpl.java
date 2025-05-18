@@ -312,7 +312,7 @@ class MatrixImpl implements Matrix, Cloneable {
         return new MatrixImpl(newElements);
     }
 
-    //38
+    //38 전치행렬 구하기
     @Override
     public Matrix transposeMatrix() {
         int newRow = colSize();
@@ -332,7 +332,7 @@ class MatrixImpl implements Matrix, Cloneable {
         return new MatrixImpl(newElements);
     }
 
-    //39
+    //39 대각 요소의 합
     @Override
     public Scalar trace() {
         if (!isSquare()) {
@@ -354,66 +354,155 @@ class MatrixImpl implements Matrix, Cloneable {
         return sumElements;
     }
 
-    //40
+    //40. 정사각 행렬 판단
     @Override
     public boolean isSquare() {
-
-        return false;
+        if(rowSize() > 0 && rowSize() == colSize()) return true;
+        else return false;
     }
 
-    //41
+    //41. 상삼각 행렬 판단
     @Override
     public boolean isUpperTriangularMatrix() {
+        if(!isSquare()) return false;   // 정사각 행렬 판단
 
-        return false;
+        Scalar zeroScalar = new ScalarImpl("0");
+
+        for (int i = 0; i < rowSize(); i++) {
+            for (int j = 0; j < colSize(); j++) {
+                if(i > j) {
+                    Scalar currentElement = elements.get(i).get(j);
+                    if(currentElement == null || !currentElement.equals(zeroScalar)) return false;
+                }
+            }
+        }
+
+        return true;
     }
 
-    //42
+    //42. 하삼각 행렬 판단
     @Override
     public boolean isLowerTriangularMatrix() {
+        if(!isSquare()) return false;   // 정사각 행렬 판단
 
-        return false;
+        Scalar zeroScalar = new ScalarImpl("0");
+
+        for (int i = 0; i < rowSize(); i++) {
+            for (int j = 0; j < colSize(); j++) {
+                if(i < j) {
+                    Scalar currentElement = elements.get(i).get(j);
+                    if(currentElement == null || !currentElement.equals(zeroScalar)) return false;
+                }
+            }
+        }
+
+        return true;
     }
 
-    //43
+    //43 단위 행렬 판단
     @Override
     public boolean isIdentity() {
+        if(!isSquare()) return false;   // 정사각 행렬 판단
 
-        return false;
+        Scalar oneScalar = new ScalarImpl("1");
+        Scalar zeroScalar = new ScalarImpl("0");
+
+        for (int i = 0; i < rowSize(); i++) {
+            for (int j = 0; j < colSize(); j++) {
+                Scalar currentElement = elements.get(i).get(j);
+
+                if(currentElement == null) return false;
+                if(i == j) {
+                    if(!currentElement.equals(oneScalar)) return false;
+                } else {
+                    if(!currentElement.equals(zeroScalar)) return false;
+                }
+            }
+        }
+
+        return true;
     }
 
-    //44
+    //44 영행렬 판단
     @Override
     public boolean isZero() {
+        if(rowSize() == 0 || colSize() == 0) return false; // 에러처리를 해야할까?
 
-        return false;
+        Scalar zeroScalar = new ScalarImpl("0");
+
+        for (int i = 0; i < rowSize(); i++) {
+            for (int j = 0; j < colSize(); j++) {
+                Scalar currentElement = elements.get(i).get(j);
+
+                if(currentElement == null || !currentElement.equals(zeroScalar)) return false;
+            }
+        }
+
+        return true;
     }
 
-    //45
+    //45 두 행의 위치 맞교환
     @Override
-    public Matrix rowSwap(int row1, int row2) {
+    public void rowSwap(int row1, int row2) {
+        if (row1 < 0 || row1 >= rowSize()) return; // 예외처리 하기
+        if (row2 < 0 || row2 >= rowSize()) return; // 예외처리 하기
+        if (row1 == row2) return;
 
-        return null;
+        List<Scalar> temp = elements.get(row1);
+        elements.set(row1, elements.get(row2));
+        elements.set(row2, temp);
     }
 
-    //46
+    //46 두 열의 위치 맞교환
     @Override
-    public Matrix colSwap(int col1, int col2) {
+    public void colSwap(int col1, int col2) {
+        if (col1 < 0 || col1 >= colSize()) return; //예외 처리
+        if (col2 < 0 || col2 >= colSize()) return; //예외 처리
+        if (col1 == col2) return;
 
-        return null;
+        for (int i = 0; i < rowSize(); i++) {
+            List<Scalar> currentRow = elements.get(i);
+
+            Scalar temp = currentRow.get(col1);
+            currentRow.set(col1, currentRow.get(col2));
+            currentRow.set(col2, temp);
+        }
+
     }
 
-    //47
+    //47 특정 행에 상수배(스칼라)
     @Override
-    public Matrix rowMultiply(int index, Scalar val) {
+    public void rowMultiply(int index, Scalar val) {
+        if (index < 0 || index >= rowSize()) return; //예외처리하기
+        if (val == null) return; //예외처리하기
 
-        return null;
+        List<Scalar> rowElements = this.elements.get(index);
+
+        for (int i = 0; i < colSize(); i++) {
+            Scalar currentElement = rowElements.get(i);
+            
+            if (currentElement != null) {
+                currentElement.multiply(val);
+            } else {
+                //NullPointerException 처리하든 말든 예외처리
+            }
+        }
     }
 
-    //48
+    //48 특정 열에 상수배(스칼라)
     @Override
-    public Matrix colMultiply(int index, Scalar val) {
+    public void colMultiply(int index, Scalar val) {
+        if (index < 0 || index >= colSize()) return; //예외처리하기
+        if (val == null) return; //예외처리하기
 
-        return null;
+        for (int i = 0; i < rowSize(); i++) {
+            Scalar currentElement = elements.get(i).get(index);
+
+            if (currentElement != null) {
+                currentElement.multiply(val);
+            } else {
+                //NullPointerException 처리하든 말든 예외처리
+            }
+        }
     }
 }

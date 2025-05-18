@@ -266,6 +266,58 @@ public class Test {
         System.out.println("이 행렬의 대각 요소의 합은: " + m2.trace() + "\n");
 
 
-        System.out.println("40. 행렬은 자신이 정사각 행렬인지 여부를 판별해줄 수 있다.");
+        System.out.println("40. 행렬은 자신이 정사각 행렬인지 여부를 판별해 줄 수 있다.");
+        System.out.println(m4);
+        System.out.print("이 행렬의 정사각 행렬 여부: ");
+        System.out.println(m4.isSquare());
+
+        System.out.println("41. 행렬은 자신이 상삼각 행렬인지 여부를 판별해 줄 수 있다.");
+        Scalar zero = Factory.createScalar("0");
+        Scalar one = Factory.createScalar("1");
+        Scalar[][] arr3 = {{one, one, one}, {zero, one, one}, {zero, zero, one}};
+        Matrix m8 = Factory.createMatrix(arr3);
+        System.out.print(m8);
+        System.out.print("이 행렬의 상삼각 행렬 여부: ");
+        System.out.println(m8.isUpperTriangularMatrix());
+
+        System.out.println("42. 행렬은 자신이 하삼각 행렬인지 여부를 판별해 줄 수 있다.");
+        Scalar[][] arr4 = {{one, zero, zero}, {one, one, zero}, {one, one, one}};
+        Matrix m9 = Factory.createMatrix(arr4);
+        System.out.print(m9);
+        System.out.print("이 행렬의 하삼각 행렬 여부: ");
+        System.out.println(m9.isLowerTriangularMatrix());
+
+        System.out.println("43. 행렬은 자신이 단위 행렬인지 여부를 판별해 줄 수 있다.");
+        System.out.println(m4);
+        System.out.println("이 행렬의 단위 행렬 여부: " + m4.isIdentity());
+
+        System.out.println("44. 행렬은 자신이 영 행렬인지 여부를 판별해 줄 수 있다.");
+        Matrix m10 = Factory.createMatrix(4, 4, zero);
+        System.out.println(m10);
+        System.out.println("이 행렬의 영 행렬 여부: " + m10.isZero());
+
+        System.out.println("45. 행렬은 특정 두 행의 위치를 맞교환할 수 있다.");
+        System.out.println(m2);
+        System.out.println("이 행렬의 1행과 2행을 맞교환하면: ");
+        m2.rowSwap(0, 1);
+        System.out.println(m2);
+
+        System.out.println("46. 행렬은 특정 두 열의 위치를 맞교환할 수 있다.");
+        System.out.println(m2);
+        System.out.println("이 행렬의 1열과 2열을 맞교환하면: ");
+        m2.colSwap(0, 1);
+        System.out.println(m2);
+
+        System.out.println("47. 행렬은 특정 행에 상수배(스칼라)를 할 수 있다.");
+        System.out.println(m2);
+        System.out.println("이 행렬의 2행에 스칼라 0을 곱하면: ");
+        m2.rowMultiply(1, zero);
+        System.out.println(m2);
+
+        System.out.println("48. 행렬은 특정 열에 상수배(스칼라)를 할 수 있다.");
+        System.out.println(m2);
+        System.out.println("이 행렬의 1열에 스칼라 0을 곱하면: ");
+        m2.colMultiply(0, zero);
+        System.out.println(m2);
     }
 }
