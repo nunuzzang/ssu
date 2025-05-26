@@ -12,7 +12,7 @@ public interface Scalar {
     //17
     Scalar clone();
     //18
-    void add(Scalar val);
+    void add(Scalar other);
     //19
-    void multiply(Scalar val);
+    void multiply(Scalar other);
 }

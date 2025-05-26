@@ -32,6 +32,7 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
         value = calculatedValue.setScale(5, RoundingMode.HALF_UP);
     }
     //12 지정, 조회
+    @Override
     public void setValue(String val) {
         BigDecimal tempValue;
         try {
@@ -41,6 +42,7 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
         }
         value = tempValue.setScale(5, RoundingMode.HALF_UP);
     }
+    @Override
     public String getValue() {
         return value.toString();
     }
@@ -71,15 +73,17 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
     }
     //18
     @Override
-    public void add(Scalar val) {
-        BigDecimal bigDecimalVal = new BigDecimal(val.getValue());
+    public void add(Scalar other) {
+        BigDecimal bigDecimalVal = new BigDecimal(other.getValue());
         value = value.add(bigDecimalVal);
+        value = value.setScale(5, RoundingMode.HALF_UP);
     }
     //19
     @Override
-    public void multiply(Scalar val) {
-        BigDecimal bigDecimalVal = new BigDecimal(val.getValue());
-        value = value.multiply(bigDecimalVal);
+    public void multiply(Scalar other) {
+        BigDecimal otherBigDecimalVal = new BigDecimal(other.getValue());
+        value = value.multiply(otherBigDecimalVal);
+        value = value.setScale(5, RoundingMode.HALF_UP);
     }
     //24
     static Scalar add(Scalar s1, Scalar s2) {

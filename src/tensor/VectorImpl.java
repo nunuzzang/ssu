@@ -10,19 +10,16 @@ class VectorImpl implements Vector {
         elements = new ArrayList<>();
         for (int i = 0; i < n; i++) elements.add(val.clone());
     }
-
     //04
     VectorImpl(int i, int j, int n) {
         elements = new ArrayList<>();
         for (int k = 0; k < n; k++) elements.add(new ScalarImpl(i, j));
     }
-
     //05
     VectorImpl(Scalar[] arr) {
         elements = new ArrayList<>();
         for (Scalar s : arr) elements.add(s.clone());
     }
-
     //11 지정, 조회
     @Override
     public void setValue(int index, Scalar val) {
@@ -38,22 +35,19 @@ class VectorImpl implements Vector {
         }
         return elements.get(index);
     }
-
     //13
     @Override
     public int size() {
         return elements.size();
     }
-
     //14
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("[ ");
-        for (Scalar s : elements) sb.append(s.toString()).append(" ");
+        for (Scalar s : elements) sb.append(s.getValue()).append(" ");
         sb.append("]");
         return sb.toString();
     }
-
     //15
     @Override
     public boolean equals(Object obj) {
@@ -65,30 +59,49 @@ class VectorImpl implements Vector {
         }
         return true;
     }
-
     //17
     @Override
     public Vector clone() {
         Scalar[] copyElements = new Scalar[size()];
-        for (int i = 0; i < size(); i++) copyElements[i] = getValue(i).clone();
+        for (int i = 0; i < size(); i++) {
+            copyElements[i] = getValue(i).clone();
+        }
         return new VectorImpl(copyElements);
     }
-
     //20
     @Override
     public void add(Vector other) {
         if (size() != other.size()) throw new SizeMismatchException("벡터 덧셈 조건에 맞지않습니다.");
-        for (int i = 0; i < size(); i++) getValue(i).add(other.getValue(i));
+        for (int i = 0; i < size(); i++) {
+            getValue(i).add(other.getValue(i));
+        }
     }
-
     //21
     @Override
     public void multiply(Scalar scalar) {
         for (Scalar s : elements) s.multiply(scalar);
     }
-
+    //30
+    @Override
+    public Matrix toVerticalMatrix() {
+        Scalar[][] arr = new Scalar[size()][1];
+        for (int i = 0; i < size(); i++) {
+            arr[i][0] = getValue(i).clone();
+        }
+        return new MatrixImpl(arr);
+    }
+    //31
+    @Override
+    public Matrix toHorizontalMatrix() {
+        Scalar[][] arr = new Scalar[1][size()];
+        for (int i = 0; i < size(); i++) {
+            arr[0][i] = getValue(i).clone();
+        }
+        return new MatrixImpl(arr);
+    }
     //26
     static Vector add(Vector v1, Vector v2){
+        if(v1.size() != v2.size()) throw new SizeMismatchException("벡터의 길이가 다릅니다.");
         Vector result = v1.clone();
         result.add(v2);
         return result;
@@ -99,28 +112,4 @@ class VectorImpl implements Vector {
         result.multiply(s);
         return result;
     }
-
-
-
-
-    //30
-    @Override
-    public Matrix toVerticalMatrix() {
-        Scalar[][] arr = new Scalar[size()][1];
-        for (int i = 0; i < size(); i++) {
-            arr[i][0] = getValue(i).clone();
-        }
-        return new MatrixImpl(arr);
-    }
-
-    //31
-    @Override
-    public Matrix toHorizontalMatrix() {
-        Scalar[][] arr = new Scalar[1][size()];
-        for (int i = 0; i < size(); i++) {
-            arr[0][i] = getValue(i).clone();
-        }
-        return new MatrixImpl(arr);
-    }
-
 }
