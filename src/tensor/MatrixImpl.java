@@ -3,7 +3,7 @@ package tensor;
 import java.io.*;
 import java.util.*;
 
-class MatrixImpl implements Matrix, Cloneable {
+class MatrixImpl implements Matrix {
     private List<List<Scalar>> elements;
 
     //06
@@ -18,7 +18,6 @@ class MatrixImpl implements Matrix, Cloneable {
             elements.add(row);
         }
     }
-
     //07
     MatrixImpl(int i, int j, int m, int n) {
         if (i >= j || m <= 0 || n <= 0) throw new IllegalArgumentException("잘못된 인자를 입력하였습니다.");
@@ -31,7 +30,6 @@ class MatrixImpl implements Matrix, Cloneable {
             elements.add(row);
         }
     }
-
     //08
     MatrixImpl(String csvPath) throws IOException {
         elements = new ArrayList<>();
@@ -52,7 +50,6 @@ class MatrixImpl implements Matrix, Cloneable {
             }
         }
     }
-
     //09
     MatrixImpl(Scalar[][] arr) {
         elements = new ArrayList<>();
@@ -64,7 +61,6 @@ class MatrixImpl implements Matrix, Cloneable {
             elements.add(row);
         }
     }
-
     //10
     MatrixImpl(int size) {
         if (size <= 0) throw new IllegalArgumentException("잘못된 인자를 입력하였습니다.");
@@ -86,7 +82,6 @@ class MatrixImpl implements Matrix, Cloneable {
             elements.add(row);
         }
     }
-
     //11 지정, 조회
     @Override
     public void setValue(int row, int col, Scalar val){
@@ -125,7 +120,6 @@ class MatrixImpl implements Matrix, Cloneable {
         }
         return sb.toString();
     }
-
     //15
     @Override
     public boolean equals(Object obj) {
@@ -141,7 +135,6 @@ class MatrixImpl implements Matrix, Cloneable {
         }
         return true;
     }
-
     //17
     @Override
     public Matrix clone() {
@@ -153,7 +146,6 @@ class MatrixImpl implements Matrix, Cloneable {
         }
         return new MatrixImpl(copyElements);
     }
-
     //22
     @Override
     public void add(Matrix other) {
@@ -165,7 +157,6 @@ class MatrixImpl implements Matrix, Cloneable {
             }
         }
     }
-
     //23
     @Override
     public void multiply(Matrix other) {
@@ -208,7 +199,6 @@ class MatrixImpl implements Matrix, Cloneable {
 
         return new VectorImpl(result);
     }
-
     //35
     @Override
     public Vector getColVector(int col) {
@@ -223,7 +213,6 @@ class MatrixImpl implements Matrix, Cloneable {
 
         return new VectorImpl(result);
     }
-
     //36
     @Override
     public Matrix extractSubMatrix(int rowStart, int rowEnd, int colStart, int colEnd) {
@@ -257,7 +246,6 @@ class MatrixImpl implements Matrix, Cloneable {
 
         return new MatrixImpl(subMatrixElements);
     }
-
     //37
     @Override
     public Matrix minorSubMatrix(int row, int col) {
@@ -291,7 +279,6 @@ class MatrixImpl implements Matrix, Cloneable {
         }
         return new MatrixImpl(newElements);
     }
-
     //38 전치행렬 구하기
     @Override
     public Matrix transposeMatrix() {
@@ -311,7 +298,6 @@ class MatrixImpl implements Matrix, Cloneable {
         }
         return new MatrixImpl(newElements);
     }
-
     //39 대각 요소의 합
     @Override
     public Scalar trace() {
@@ -331,14 +317,12 @@ class MatrixImpl implements Matrix, Cloneable {
         }
         return sumElements;
     }
-
     //40. 정사각 행렬 판단
     @Override
     public boolean isSquare() {
         if(rowSize() > 0 && rowSize() == colSize()) return true;
         else return false;
     }
-
     //41. 상삼각 행렬 판단
     @Override
     public boolean isUpperTriangular() {
@@ -359,7 +343,6 @@ class MatrixImpl implements Matrix, Cloneable {
 
         return true;
     }
-
     //42. 하삼각 행렬 판단
     @Override
     public boolean isLowerTriangular() {
@@ -380,7 +363,6 @@ class MatrixImpl implements Matrix, Cloneable {
 
         return true;
     }
-
     //43 단위 행렬 판단
     @Override
     public boolean isIdentity() {
@@ -406,7 +388,6 @@ class MatrixImpl implements Matrix, Cloneable {
 
         return true;
     }
-
     //44 영행렬 판단
     @Override
     public boolean isZero() {
@@ -420,7 +401,6 @@ class MatrixImpl implements Matrix, Cloneable {
         }
         return true;
     }
-
     //45 두 행의 위치 맞교환
     @Override
     public void rowSwap(int row1, int row2) {
@@ -433,7 +413,6 @@ class MatrixImpl implements Matrix, Cloneable {
         elements.set(row1, elements.get(row2));
         elements.set(row2, temp);
     }
-
     //46 두 열의 위치 맞교환
     @Override
     public void colSwap(int col1, int col2) {
@@ -450,7 +429,6 @@ class MatrixImpl implements Matrix, Cloneable {
             currentRow.set(col2, temp);
         }
     }
-
     //47 특정 행에 상수배(스칼라)
     @Override
     public void rowMultiply(int row, Scalar val) {
@@ -473,7 +451,6 @@ class MatrixImpl implements Matrix, Cloneable {
             }
         }
     }
-
     //48 특정 열에 상수배(스칼라)
     @Override
     public void colMultiply(int col, Scalar val) {
@@ -493,7 +470,6 @@ class MatrixImpl implements Matrix, Cloneable {
             }
         }
     }
-
     //49
     @Override
     public void rowAddOtherRow(int targetRow, int sourceRow, Scalar val) {
@@ -525,7 +501,6 @@ class MatrixImpl implements Matrix, Cloneable {
             targetElement.add(term);
         }
     }
-
     //50
     @Override
     public void colAddOtherCol(int targetCol, int sourceCol, Scalar val) {
@@ -554,7 +529,6 @@ class MatrixImpl implements Matrix, Cloneable {
             targetElement.add(term);
         }
     }
-
     //51
     @Override
     public Matrix getRREF() {
@@ -605,7 +579,6 @@ class MatrixImpl implements Matrix, Cloneable {
         }
         return copy;
     }
-
     //52
     @Override
     public boolean isRREF() {
@@ -647,7 +620,6 @@ class MatrixImpl implements Matrix, Cloneable {
         }
         return true;
     }
-
     //53
     @Override
     public Scalar getDeterminant() {
@@ -708,7 +680,6 @@ class MatrixImpl implements Matrix, Cloneable {
         }
         return totalDeterminant;
     }
-
     //54
     @Override
     public Matrix getInverseMatrix() {
