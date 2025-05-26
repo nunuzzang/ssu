@@ -422,7 +422,6 @@ class MatrixImpl implements Matrix, Cloneable {
                 if(currentElement == null || !currentElement.equals(zeroScalar)) return false;
             }
         }
-
         return true;
     }
 
