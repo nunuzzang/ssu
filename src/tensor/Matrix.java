@@ -14,18 +14,20 @@ public interface Matrix {
     //17
     Matrix clone();
     //22
-    Matrix add(Matrix other);
+    void add(Matrix other);
     //23
-    Matrix multiply(Matrix other);
+    void multiply(Matrix other);
     //28
     static Matrix add(Matrix m1, Matrix m2){
         Matrix result = m1.clone();
-        return result.add(m2);
+        result.add(m2);
+        return result;
     }
     //29
     static Matrix multiply(Matrix m1, Matrix m2){
         Matrix result = m1.clone();
-        return result.multiply(m2);
+        result.multiply(m2);
+        return result;
     }
 
     //32
@@ -95,13 +97,13 @@ public interface Matrix {
     }
 
     //34
-    Vector getRowVector (int index);
+    Vector getRowVector (int row);
 
     //35
-    Vector getColVector(int index);
+    Vector getColVector(int col);
 
     //36
-    Matrix extractSubMatrix(int rowStart, int rowEnd, int colStart, int colEnd);
+    Matrix extractSubMatrix(int startRow, int endRow, int startCol, int endCol);
 
     //37
     Matrix minorSubMatrix (int row, int col);
@@ -114,8 +116,8 @@ public interface Matrix {
 
     //40~44
     boolean isSquare();
-    boolean isUpperTriangularMatrix();
-    boolean isLowerTriangularMatrix();
+    boolean isUpperTriangular();
+    boolean isLowerTriangular();
     boolean isIdentity();
     boolean isZero();
 
@@ -126,8 +128,26 @@ public interface Matrix {
     void colSwap(int col1, int col2);
 
     //47
-    void rowMultiply(int index, Scalar val);
+    void rowMultiply(int row, Scalar val);
 
     //48
-    void colMultiply(int index, Scalar val);
+    void colMultiply(int col, Scalar val);
+
+    //49
+    void rowAddOtherRow(int targetRow, int sourceRow, Scalar val);
+
+    //50
+    void colAddOtherCol(int targetCol, int sourceCol, Scalar val);
+
+    //51
+    Matrix getRREF();
+
+    //52
+    Matrix isRREF();
+
+    //53
+    Scalar getMatrix();
+
+    //54
+    Matrix getInverseMatrix();
 }

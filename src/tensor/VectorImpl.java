@@ -2,13 +2,13 @@ package tensor;
 
 import java.util.*;
 
-class VectorImpl implements Vector, Cloneable {
+class VectorImpl implements Vector {
     private List<Scalar> elements;
 
     //03
     VectorImpl(int n, Scalar val) {
         elements = new ArrayList<>();
-        for (int i = 0; i < n; i++) elements.add(val.clone()); //clone 객체 복사부분 다시 생각해보기
+        for (int i = 0; i < n; i++) elements.add(val.clone());
     }
 
     //04
@@ -26,10 +26,16 @@ class VectorImpl implements Vector, Cloneable {
     //11 지정, 조회
     @Override
     public void setValue(int index, Scalar val) {
+        if (index < 0 || index >= elements.size()) {
+            throw new IndexOutOfBoundsException("인덱스 범위를 벗어났습니다.");
+        }
         elements.set(index, val.clone());
     }
     @Override
     public Scalar getValue(int index) {
+        if (index < 0 || index >= elements.size()) {
+            throw new IndexOutOfBoundsException("인덱스 범위를 벗어났습니다.");
+        }
         return elements.get(index);
     }
 
@@ -60,50 +66,22 @@ class VectorImpl implements Vector, Cloneable {
         return true;
     }
 
-//    @Override
-//    public int hashCode() {
-//        int result = 1;
-//        for (Scalar element : elements) {
-//            result = 31 * result + (element == null ? 0 : element.hashCode());
-//        }
-//        result = 31 * result + Integer.hashCode(elements.length);
-//        return result;
-//    }
-
     //17
     public Vector clone() {
-//        Scalar[] copyElements = new Scalar[size()];
-//        for (int i = 0; i < size(); i++) copyElements[i] = getValue(i).clone();
-//        return new VectorImpl(copyElements);
-        try{
-            VectorImpl clonedVector = (VectorImpl) super.clone();
-            if (this.elements != null) {
-                clonedVector.elements = new ArrayList<>(this.elements.size()); // 새 List 생성
-                for (Scalar originalScalar : this.elements) {
-                    if (originalScalar != null) {
-                        clonedVector.elements.add(originalScalar.clone());
-                    } else {
-                        clonedVector.elements.add(null); // null 요소도 그대로 복제
-                    }
-                }
-            }
-            return clonedVector;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError("복제 실패", e);
-        }
+        Scalar[] copyElements = new Scalar[size()];
+        for (int i = 0; i < size(); i++) copyElements[i] = getValue(i).clone();
+        return new VectorImpl(copyElements);
     }
 
     //20
-    public Vector add(Vector other) {
-        if (size() != other.size()) throw new DimensionMismatchException("Vectors must have the same length for addition.");
+    public void add(Vector other) {
+        if (size() != other.size()) throw new SizeMismatchException("벡터 덧셈 조건에 맞지않습니다.");
         for (int i = 0; i < size(); i++) getValue(i).add(other.getValue(i));
-        return this;
     }
 
     //21
-    public Vector multiply(Scalar scalar) {
+    public void multiply(Scalar scalar) {
         for (Scalar s : elements) s.multiply(scalar);
-        return this;
     }
 
     //30
@@ -123,10 +101,7 @@ class VectorImpl implements Vector, Cloneable {
         for (int i = 0; i < size(); i++) {
             arr[0][i] = getValue(i).clone();
         }
-
         return new MatrixImpl(arr);
     }
-
-
 
 }

@@ -4,12 +4,12 @@ public class Tensors {
     // 스칼라의 연산
     //24
     public static Scalar add(Scalar s1, Scalar s2) {
-        return Scalar.add(s1, s2);
+        return ScalarImpl.add(s1, s2);
     }
 
     //25
     public static Scalar multiply(Scalar s1, Scalar s2) {
-        return Scalar.multiply(s1, s2);
+        return ScalarImpl.multiply(s1, s2);
     }
 
     //벡터의 연산

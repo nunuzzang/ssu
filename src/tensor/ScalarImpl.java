@@ -3,7 +3,7 @@ package tensor;
 import java.math.BigDecimal;
 import java.util.Random;
 
-class ScalarImpl implements Scalar, Cloneable {
+class ScalarImpl implements Scalar, Comparable<Scalar> {
     private BigDecimal value;
 
     //01
@@ -43,43 +43,43 @@ class ScalarImpl implements Scalar, Cloneable {
         return value.compareTo(compareObj2) == 0;
     }
 
-    @Override
-    public int hashCode() {
-        return value.hashCode();
-    }
-
     //16
     @Override
-    public int compareTo(Scalar val) {
-        BigDecimal bigDecimalValue = new BigDecimal(val.getValue());
+    public int compareTo(Scalar other) {
+        BigDecimal bigDecimalValue = new BigDecimal(other.getValue());
         return value.compareTo(bigDecimalValue);
     }
 
     //17
     @Override
     public Scalar clone() {
-//        return new ScalarImpl(value.toPlainString());
-        try {
-            ScalarImpl cloned = (ScalarImpl) super.clone();
-            return cloned;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError("복제 실패", e);
-        }
+        return new ScalarImpl(value.toPlainString());
     }
 
     //18
     @Override
-    public Scalar add(Scalar other) {
+    public void add(Scalar other) {
         BigDecimal bigDecimalVal = new BigDecimal(other.getValue());
         value = value.add(bigDecimalVal);
-        return this;
     }
 
     //19
     @Override
-    public Scalar multiply(Scalar other) {
+    public void multiply(Scalar other) {
         BigDecimal bigDecimalVal = new BigDecimal(other.getValue());
         value = value.multiply(bigDecimalVal);
-        return this;
+    }
+
+    //24
+    static Scalar add(Scalar s1, Scalar s2) {
+        Scalar result = s1.clone();
+        result.add(s2);
+        return result;
+    }
+    //25
+    static Scalar multiply(Scalar s1, Scalar s2){
+        Scalar result = s1.clone();
+        result.multiply(s2);
+        return result;
     }
 }

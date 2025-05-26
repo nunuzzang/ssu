@@ -13,18 +13,20 @@ public interface Vector {
     //17
     Vector clone();
     //20
-    Vector add(Vector other);
+    void add(Vector other);
     //21
-    Vector multiply(Scalar scalar);
+    void multiply(Scalar scalar);
     //26
     static Vector add(Vector v1, Vector v2){
         Vector result = v1.clone();
-        return result.add(v2);
+        result.add(v2);
+        return result;
     }
     //27
     static Vector multiply(Vector v, Scalar s){
         Vector result = v.clone();
-        return result.multiply(s);
+        result.multiply(s);
+        return result;
     }
     //30
     Matrix toVerticalMatrix();
