@@ -15,19 +15,7 @@ public interface Vector {
     //20
     void add(Vector other);
     //21
-    void multiply(Scalar scalar);
-    //26
-    static Vector add(Vector v1, Vector v2){
-        Vector result = v1.clone();
-        result.add(v2);
-        return result;
-    }
-    //27
-    static Vector multiply(Vector v, Scalar s){
-        Vector result = v.clone();
-        result.multiply(s);
-        return result;
-    }
+    void multiply(Scalar val);
     //30
     Matrix toVerticalMatrix();
     //31

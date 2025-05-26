@@ -67,6 +67,7 @@ class VectorImpl implements Vector {
     }
 
     //17
+    @Override
     public Vector clone() {
         Scalar[] copyElements = new Scalar[size()];
         for (int i = 0; i < size(); i++) copyElements[i] = getValue(i).clone();
@@ -74,15 +75,33 @@ class VectorImpl implements Vector {
     }
 
     //20
+    @Override
     public void add(Vector other) {
         if (size() != other.size()) throw new SizeMismatchException("벡터 덧셈 조건에 맞지않습니다.");
         for (int i = 0; i < size(); i++) getValue(i).add(other.getValue(i));
     }
 
     //21
+    @Override
     public void multiply(Scalar scalar) {
         for (Scalar s : elements) s.multiply(scalar);
     }
+
+    //26
+    static Vector add(Vector v1, Vector v2){
+        Vector result = v1.clone();
+        result.add(v2);
+        return result;
+    }
+    //27
+    static Vector multiply(Vector v, Scalar s){
+        Vector result = v.clone();
+        result.multiply(s);
+        return result;
+    }
+
+
+
 
     //30
     @Override

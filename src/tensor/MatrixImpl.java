@@ -197,6 +197,86 @@ class MatrixImpl implements Matrix, Cloneable {
         }
     }
 
+    //28
+    static Matrix add(Matrix m1, Matrix m2){
+        Matrix result = m1.clone();
+        result.add(m2);
+        return result;
+    }
+    //29
+    static Matrix multiply(Matrix m1, Matrix m2){
+        Matrix result = m1.clone();
+        result.multiply(m2);
+        return result;
+    }
+
+    //32
+    static Matrix attachHMatrix(Matrix m1, Matrix m2){
+        if (m1.rowSize() != m2.rowSize()){
+            return null;//예외 처리하기
+        }
+        int newRows = m1.rowSize();
+        int newCols = m1.colSize() + m2.colSize();
+        Scalar[][] newElements = new Scalar[newRows][newCols];
+
+        for (int i = 0; i < newRows; i++) {
+            for (int j = 0; j < m1.colSize(); j++) {
+                Scalar currentScalar = m1.getValue(i, j);
+                if (currentScalar != null) {
+                    newElements[i][j] = currentScalar.clone();
+                } else {
+                    newElements[i][j] = null;
+                }
+            }
+        }
+
+        for (int i = 0; i < newRows; i++) {
+            for (int j = 0; j < m2.colSize(); j++) {
+                Scalar otherScalar = m2.getValue(i, j);
+                if (otherScalar != null) {
+                    newElements[i][m1.colSize() + j] = otherScalar.clone();
+                } else {
+                    newElements[i][m1.colSize() + j] = null;
+                }
+            }
+        }
+        return new MatrixImpl(newElements);
+    }
+
+    //33
+    static Matrix attachVMatrix(Matrix m1, Matrix m2){
+        if (m1.colSize() != m2.colSize()) {
+            return null;//예외 처리하기
+        }
+        int newRows = m1.rowSize() + m2.rowSize();
+        int newCols = m1.colSize();
+        Scalar[][] newElements = new Scalar[newRows][newCols];
+
+        for (int i = 0; i < m1.rowSize(); i++) {
+            for (int j = 0; j < newCols; j++) {
+                Scalar currentScalar = m1.getValue(i, j);
+                if (currentScalar != null) {
+                    newElements[i][j] = currentScalar.clone();
+                } else {
+                    newElements[i][j] = null;
+                }
+            }
+        }
+
+        for (int i = 0; i < m2.rowSize(); i++) {
+            for (int j = 0; j < newCols; j++) {
+                Scalar otherScalar = m2.getValue(i, j);
+                if (otherScalar != null) {
+                    newElements[m1.rowSize() + i][j] = otherScalar.clone();
+                } else {
+                    newElements[m1.rowSize() + i][j] = null;
+                }
+            }
+        }
+        return new MatrixImpl(newElements);
+    }
+
+
     //34
     @Override
     public Vector getRowVector(int row) {
@@ -615,7 +695,7 @@ class MatrixImpl implements Matrix, Cloneable {
 
     //52
     @Override
-    public Matrix isRREF() {
+    public boolean isRREF() {
         int prevLead = -1;
         for (int i = 0; i < rowSize(); i++) {
             int lead = -1;
@@ -626,18 +706,18 @@ class MatrixImpl implements Matrix, Cloneable {
                     break;
                 }
             }
-            if (lead <= prevLead) return null;
+            if (lead <= prevLead) return false;
             for (int k = 0; k < rowSize(); k++) {
                 if (k != i && lead != -1 && !getValue(k, lead).equals(new ScalarImpl("0"))) return null;
             }
             prevLead = lead;
         }
-        return this;
+        return true;
     }
 
     //53
     @Override
-    public Scalar getMatrix() {
+    public Scalar getDeterminant() {
         if (!isSquare()) {
 //            throw new InvalidOperationException("행렬식은 정사각 행렬에 대해서만 정의됩니다. 현재 크기: " + this.rows + "x" + this.cols);
         }
@@ -688,7 +768,7 @@ class MatrixImpl implements Matrix, Cloneable {
             }
 
             Matrix minorMatrix = minorSubMatrix(0, j); // (0,j)를 제외한 소행렬 (요구사항 37)
-            Scalar minorDeterminant = minorMatrix.getMatrix(); // 재귀 호출
+            Scalar minorDeterminant = minorMatrix.getDeterminant(); // 재귀 호출
 
             Scalar term = elementA0j.clone();      // A[0][j]
             term.multiply(minorDeterminant);    // A[0][j] * det(M[0][j])
