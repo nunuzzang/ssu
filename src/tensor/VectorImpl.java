@@ -12,7 +12,7 @@ class VectorImpl implements Vector {
     }
 
     //04
-    VectorImpl(double i, double j, int n) {
+    VectorImpl(int i, int j, int n) {
         elements = new ArrayList<>();
         for (int k = 0; k < n; k++) elements.add(new ScalarImpl(i, j));
     }

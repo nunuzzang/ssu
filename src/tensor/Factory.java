@@ -11,7 +11,7 @@ public class Factory {
     }
 
     //02
-    public static Scalar createScalar(double i, double j) {
+    public static Scalar createScalar(int i, int j) {
         return new ScalarImpl(i, j);
     }
 
@@ -22,7 +22,7 @@ public class Factory {
     }
 
     //04
-    public static Vector createVector(double i, double j, int n) {
+    public static Vector createVector(int i, int j, int n) {
         return new VectorImpl(i, j, n);
     }
 

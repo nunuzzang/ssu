@@ -701,14 +701,14 @@ class MatrixImpl implements Matrix, Cloneable {
             int lead = -1;
             for (int j = 0; j < colSize(); j++) {
                 if (!getValue(i, j).equals(new ScalarImpl("0"))) {
-                    if (!getValue(i, j).equals(new ScalarImpl("1"))) return null;
+                    if (!getValue(i, j).equals(new ScalarImpl("1"))) return false;
                     lead = j;
                     break;
                 }
             }
             if (lead <= prevLead) return false;
             for (int k = 0; k < rowSize(); k++) {
-                if (k != i && lead != -1 && !getValue(k, lead).equals(new ScalarImpl("0"))) return null;
+                if (k != i && lead != -1 && !getValue(k, lead).equals(new ScalarImpl("0"))) return false;
             }
             prevLead = lead;
         }
