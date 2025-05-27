@@ -68,9 +68,31 @@ public class Test {
         System.out.println("인자값: i=2, j=4 사이 무작위, m=4, n=2");
         System.out.println("결과: \n" + mB);
 
-        // 8. 행렬 생성 (csv 파일) - 파일이 없으므로 생략 또는 주석처리
-        // System.out.println("8. 행렬 생성 (csv 파일)");
-        // System.out.println(Factory.createMatrix("matrix.csv"));
+        // 8. csv 파일로부터 m x n 행렬을 생성할 수 있다.
+        Matrix expectedAnswer8 = Factory.createMatrix(new Scalar[][]{
+                {Factory.createScalar("2"), Factory.createScalar("0"), Factory.createScalar("2")},
+                {Factory.createScalar("2"), Factory.createScalar("1"), Factory.createScalar("7")},
+                {Factory.createScalar("5"), Factory.createScalar("9"), Factory.createScalar("0")},
+        });
+        try {
+            java.io.FileWriter fw = new java.io.FileWriter("matrix.csv");
+            fw.write("2, 0, 2\n2, 1, 7\n5, 9, 0\n");
+            fw.close();
+
+            System.out.println("8. csv 파일로부터 m x n 행렬을 생성할 수 있다.");
+            System.out.println("CSV 파일 내용:");
+            System.out.println("2,0,2");
+            System.out.println("2,1,7");
+            System.out.println("5,9,0\n");
+            System.out.println("기댓값:\n" + expectedAnswer8);
+            Matrix mCsv = Factory.createMatrix("matrix.csv");
+            System.out.println("생성된 행렬:\n" + mCsv);
+            System.out.println(mCsv.equals(expectedAnswer8) ? "통과\n" : "실패\n");
+
+            new java.io.File("matrix.csv").delete();
+        } catch (Exception e) {
+            System.out.println("CSV 파일 처리 중 예외 발생: " + e.getMessage());
+        }
 
         // 9. 2차원 배열로부터 m x n 행렬 생성
         Scalar[][] arr2 = {
@@ -84,7 +106,7 @@ public class Test {
             {Factory.createScalar("9"), Factory.createScalar("12")},
             {Factory.createScalar("15"), Factory.createScalar("18")}
         });
-        System.out.println("2차원 배열로부터 m x n 행렬 생성");
+        System.out.println("9. 2차원 배열로부터 m x n 행렬 생성");
         System.out.println("기댓값: \n" + expectedAnswer9);
         System.out.println("결과: \n" + mC);
         System.out.println(mC.equals(expectedAnswer9) ? "통과\n" : "실패\n");
@@ -347,8 +369,8 @@ public class Test {
         mA = Factory.createMatrix(2, 3, Factory.createScalar("4"));
         Matrix mF = Factory.createMatrix(2, 3, Factory.createScalar("6"));
         Matrix expectedAnswer22 = Factory.createMatrix(new Scalar[][]{
-            {Factory.createScalar("10"),  Factory.createScalar("10"), Factory.createScalar("10")}, // 7+2, 7+3, 7+4
-            {Factory.createScalar("10"), Factory.createScalar("10"), Factory.createScalar("10")}  // 7+5, 7+6, 7+7
+            {Factory.createScalar("10"),  Factory.createScalar("10"), Factory.createScalar("10")},
+            {Factory.createScalar("10"), Factory.createScalar("10"), Factory.createScalar("10")}
         });
         System.out.println("22. 행렬 덧셈");
         System.out.println("[행렬1]\n" + mA + "\n+\n[행렬2]\n" + mF + "\n=\n");
@@ -365,7 +387,7 @@ public class Test {
             {Factory.createScalar("3"), Factory.createScalar("6")}
         });
         Matrix expectedAnswer23 = Factory.createMatrix(new Scalar[][]{
-            {Factory.createScalar("18"), Factory.createScalar("45")}, // (7*1+7*3+7*5, 7*2+7*4+7*6)
+            {Factory.createScalar("18"), Factory.createScalar("45")},
             {Factory.createScalar("18"), Factory.createScalar("45")}
         });
         System.out.println("23. 행렬 곱셈");
@@ -767,7 +789,7 @@ public class Test {
         System.out.println(mA.isRREF() == expectedAnswer52 ? "통과\n" : "실패\n");
 
         // 53. 행렬식 구하기
-        Scalar expectedAnswer53 = Factory.createScalar("2"); // 예시 행렬식 값
+        Scalar expectedAnswer53 = Factory.createScalar("2");
         Scalar result53 = mA.getDeterminant();
         System.out.println("53. 행렬식 구하기");
         System.out.println("원본 행렬:\n" + mA);
