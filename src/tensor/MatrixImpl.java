@@ -316,35 +316,58 @@ class MatrixImpl implements Matrix {
     //37
     @Override
     public Matrix minorSubMatrix(int row, int col) {
-        if(row > rowSize() || col > colSize() || row < 0 || col < 0){
-            throw new IndexOutOfBoundsException("minor 인덱스가 범위를 벗어났습니다.");
+        if (row < 0 || row >= rowSize() || col < 0 || col >= colSize()) {
+            throw new IndexOutOfBoundsException("인덱스 범위를 벗어났습니다.");
         }
-        int minorRows = rowSize() - 1;
-        int minorCols = colSize() - 1;
-        Scalar[][] newElements = new Scalar[minorRows][minorCols];
 
-        int currentRowInMinor = 0;
-        for (int i = 0; i < rowSize(); i++) {
-            if (i == row) {
+        int originalRowCount = rowSize();
+        int originalColCount = colSize();
+
+        int minorNumRows = originalRowCount - 1;
+        int minorNumCols = originalColCount - 1;
+
+        if (minorNumRows < 0) minorNumRows = 0;
+        if (minorNumCols < 0) minorNumCols = 0;
+
+        Scalar[][] minorElements = new Scalar[minorNumRows][minorNumCols];
+        int targetRow = 0;
+
+        for (int r = 0; r < originalRowCount; r++) {
+            if (r == row) {
                 continue;
             }
-            int currentColMinor = 0;
-            for (int j = 0; j < colSize(); j++) {
-                if (j == col) {
+
+            int targetCol = 0;
+            for (int c = 0; c < originalColCount; c++) {
+                if (c == col) {
                     continue;
                 }
-                Scalar originalScalar = this.elements.get(i).get(j);
-                if (minorRows > 0 && minorCols > 0) {
-                    if (originalScalar != null) {
-                        newElements[currentRowInMinor][currentColMinor] = originalScalar.clone();
+
+                if (targetRow < minorNumRows && targetCol < minorNumCols) {
+                    Scalar originalScalar;
+                    List<Scalar> sourceRowList = this.elements.get(r);
+                    if (sourceRowList == null) {
+                        throw new IllegalStateException("원본 행렬의 " + r + "번째 행이 null입니다.");
+                    }
+                    if (c < sourceRowList.size()) {
+                        originalScalar = sourceRowList.get(c);
                     } else {
-                        newElements[currentRowInMinor][currentColMinor] = null;
+                        throw new IllegalStateException("원본 행렬의 " + r + "번째 행의 길이가 예상 (" + originalColCount + ")보다 짧습니다.");
+                    }
+
+                    if (originalScalar != null) {
+                        minorElements[targetRow][targetCol] = originalScalar.clone();
+                    } else {
+                        minorElements[targetRow][targetCol] = null;
                     }
                 }
-                currentColMinor++;
+                targetCol++;
+            }
+            if (minorNumRows > 0 && (targetCol > 0 || minorNumCols == 0) ) {
+                targetRow++;
             }
         }
-        return new MatrixImpl(newElements);
+        return new MatrixImpl(minorElements);
     }
     //38 전치행렬 구하기
     @Override
