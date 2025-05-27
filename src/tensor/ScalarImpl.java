@@ -44,7 +44,7 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
     }
     @Override
     public String getValue() {
-        return value.toString();
+        return value.stripTrailingZeros().toPlainString();
     }
     //14
     @Override

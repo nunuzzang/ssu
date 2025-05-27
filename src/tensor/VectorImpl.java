@@ -1,5 +1,7 @@
 package tensor;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 class VectorImpl implements Vector {
