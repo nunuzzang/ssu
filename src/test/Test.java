@@ -3,130 +3,143 @@ import tensor.*;
 
 public class Test {
     public static void main(String[] args) {
-        // 1. 스칼라 생성 (String)
-        Scalar sA = Factory.createScalar("3.14");
-        Scalar expectedAnswer1 = Factory.createScalar("3.14");
-        System.out.println("1. 스칼라 생성 (String)");
-        System.out.println("인자값: \"3.14\"");
+        // 1. 값(String)을 지정하여 스칼라 생성
+        Scalar sA = Factory.createScalar("1024");
+        Scalar expectedAnswer1 = Factory.createScalar("1024");
+        System.out.println("1. 값(String)을 지정하여 스칼라 생성");
+        System.out.println("인자값: \"1024\"");
         System.out.println("기댓값: " + expectedAnswer1);
-        System.out.println(sA);
-        System.out.println("");
+        System.out.println("결과: " + sA);
+        System.out.println(sA.equals(expectedAnswer1) ? "통과\n" : "실패\n");
 
-        // 2. 스칼라 생성 (int, int) 무작위
-        Scalar sB = Factory.createScalar("5.0");  
-        System.out.println("2. 스칼라 생성 (int i, int j) 무작위");
-        System.out.println("i = 1, j = 10");
-        System.out.println(sB);
-        System.out.println();
+        // 2. i 이상 j 미만의 무작위 값을 요소로하는 스칼라 생성
+        Scalar sB = Factory.createScalar(1,20);
+        System.out.println("2. i 이상 j 미만의 무작위 값을 요소로하는 스칼라 생성");
+        System.out.println("i = 1, j = 20");
+        System.out.println("결과: " + sB + "\n");
 
-        // 3. 벡터 생성 (n, val)
-        Vector vA = Factory.createVector(4, Factory.createScalar("2"));
+        // 3. 지정된 하나의 값을 모든 요소의 값으로 하는 n-차원 벡터 생성
+        Vector vA = Factory.createVector(3, Factory.createScalar("10"));
         Vector expectedAnswer3 = Factory.createVector(new Scalar[]{
-            Factory.createScalar("2"),
-            Factory.createScalar("2"),
-            Factory.createScalar("2"),
-            Factory.createScalar("2")
+            Factory.createScalar("10"),
+            Factory.createScalar("10"),
+            Factory.createScalar("10")
         });
-        System.out.println("3. 벡터 생성 (n, val)");
-        System.out.println("인자값: n=4, val=2");
+        System.out.println("3. 지정된 하나의 값을 모든 요소의 값으로 하는 n-차원 벡터 생성");
+        System.out.println("인자값: n=3, val=10");
         System.out.println("기댓값: " + expectedAnswer3);
-        System.out.println(vA);
-        System.out.println();
+        System.out.println("결과: " + vA);
+        System.out.println(vA.equals(expectedAnswer3) ? "통과\n" : "실패\n");
 
-        // 4. 벡터 생성 (i, j, n) 무작위
-        Vector vB = Factory.createVector(new Scalar[]{
-            Factory.createScalar("3"),
-            Factory.createScalar("4"),
-            Factory.createScalar("5"),
-            Factory.createScalar("6")
-        });
-        System.out.println("4. 벡터 생성 (i, j, n) 무작위");
-        System.out.println("인자값: i=1, j=5 사이 무작위, n=4");
-        System.out.println(vB);
-        System.out.println();
+        // 4. i 이상 j 미만의 무작위 값을 요소로 하는 n-차원 벡터 생성
+        Vector vB = Factory.createVector(2, 8, 6);
+        System.out.println("4. i 이상 j 미만의 무작위 값을 요소로 하는 n-차원 벡터 생성");
+        System.out.println("인자값: i=2, j=8 사이 무작위, n=6");
+        System.out.println("결과: " + vB + "\n");
 
-        // 5. 벡터 생성 (배열)
-        Scalar[] arr = {Factory.createScalar("1"), Factory.createScalar("2"), Factory.createScalar("3")};
+        // 5. 1차원 배열로부터 n-차원 벡터 생성
+        Scalar[] arr = {Factory.createScalar("3"), Factory.createScalar("6"), Factory.createScalar("9")};
         Vector vC = Factory.createVector(arr);
         Vector expectedAnswer5 = Factory.createVector(new Scalar[]{
-            Factory.createScalar("1"),
-            Factory.createScalar("2"),
-            Factory.createScalar("3")
+            Factory.createScalar("3"),
+            Factory.createScalar("6"),
+            Factory.createScalar("9")
         });
-        System.out.println("5. 벡터 생성 (배열)");
-        System.out.println("인자값: [1, 2, 3]");
+        System.out.println("5. 1차원 배열로부터 n-차원 벡터 생성");
+        System.out.println("인자값: [3, 6, 9]");
         System.out.println("기댓값: " + expectedAnswer5);
-        System.out.println(vC);
-        System.out.println();
+        System.out.println(vC.equals(expectedAnswer5) ? "통과\n" : "실패\n");
 
-        // 6. 행렬 생성 (m, n, val)
-        Matrix mA = Factory.createMatrix(2, 3, Factory.createScalar("7"));
+        // 6. 지정한 하나의 값을 모든 요소의 값으로 하는 m x n 행렬 생성
+        Matrix mA = Factory.createMatrix(2, 2, Factory.createScalar("24"));
         Matrix expectedAnswer6 = Factory.createMatrix(new Scalar[][]{
-            {Factory.createScalar("7"), Factory.createScalar("7"), Factory.createScalar("7")},
-            {Factory.createScalar("7"), Factory.createScalar("7"), Factory.createScalar("7")}
+            {Factory.createScalar("24"), Factory.createScalar("24")},
+            {Factory.createScalar("24"), Factory.createScalar("24")}
         });
-        System.out.println("6. 행렬 생성 (m, n, val)");
-        System.out.println("인자값: m=2, n=3, val=7");
-        System.out.println("기댓값: " + expectedAnswer6);
-        System.out.println(mA);
-        System.out.println();
+        System.out.println("6. 지정한 하나의 값을 모든 요소의 값으로 하는 m x n 행렬 생성");
+        System.out.println("인자값: m=2, n=2, val=24");
+        System.out.println("기댓값: \n" + expectedAnswer6);
+        System.out.println("결과: \n" + mA);
+        System.out.println(mA.equals(expectedAnswer6)? "통과\n" : "실패\n");
 
-        // 7. 행렬 생성 (i, j, m, n) 무작위
-        Matrix mB = Factory.createMatrix(new Scalar[][]{
-            {Factory.createScalar("2"), Factory.createScalar("3"), Factory.createScalar("4")},
-            {Factory.createScalar("5"), Factory.createScalar("6"), Factory.createScalar("7")}
-        });
-        System.out.println("7. 행렬 생성 (i, j, m, n) 무작위");
-        System.out.println("인자값: i=1, j=5 사이 무작위, m=2, n=3");
-        System.out.println(mB);
-        System.out.println();
+        // 7. i 이상 j 미만의 무작위 값을 요소로 하는 m x n 행렬 생성
+        Matrix mB = Factory.createMatrix(2, 4, 4, 2);
+        System.out.println("7. i 이상 j 미만의 무작위 값을 요소로 하는 m x n 행렬 생성");
+        System.out.println("인자값: i=2, j=4 사이 무작위, m=4, n=2");
+        System.out.println("결과: \n" + mB);
 
         // 8. 행렬 생성 (csv 파일) - 파일이 없으므로 생략 또는 주석처리
-        // System.out.println("9. 행렬 생성 (csv 파일)");
+        // System.out.println("8. 행렬 생성 (csv 파일)");
         // System.out.println(Factory.createMatrix("matrix.csv"));
 
-        // 9. 행렬 생성 (배열)
+        // 9. 2차원 배열로부터 m x n 행렬 생성
         Scalar[][] arr2 = {
-            {Factory.createScalar("1"), Factory.createScalar("2")},
-            {Factory.createScalar("3"), Factory.createScalar("4")},
-            {Factory.createScalar("5"), Factory.createScalar("6")}
+            {Factory.createScalar("3"), Factory.createScalar("6")},
+            {Factory.createScalar("9"), Factory.createScalar("12")},
+            {Factory.createScalar("15"), Factory.createScalar("18")}
         };
         Matrix mC = Factory.createMatrix(arr2);
         Matrix expectedAnswer9 = Factory.createMatrix(new Scalar[][]{
-            {Factory.createScalar("1"), Factory.createScalar("2")},
-            {Factory.createScalar("3"), Factory.createScalar("4")},
-            {Factory.createScalar("5"), Factory.createScalar("6")}
+            {Factory.createScalar("3"), Factory.createScalar("6")},
+            {Factory.createScalar("9"), Factory.createScalar("12")},
+            {Factory.createScalar("15"), Factory.createScalar("18")}
         });
-        System.out.println("9. 행렬 생성 (배열)");
-        System.out.println("기댓값: " + expectedAnswer9);
-        System.out.println(mC);
-        System.out.println("");
+        System.out.println("2차원 배열로부터 m x n 행렬 생성");
+        System.out.println("기댓값: \n" + expectedAnswer9);
+        System.out.println("결과: \n" + mC);
+        System.out.println(mC.equals(expectedAnswer9) ? "통과\n" : "실패\n");
 
-
-        
         // 10. 단위행렬 생성
-        Matrix mD = Factory.createIdentityMatrix(3);
+        Matrix mD = Factory.createIdentityMatrix(2);
         Matrix expectedAnswer10 = Factory.createMatrix(new Scalar[][]{
-            {Factory.createScalar("1"), Factory.createScalar("0"), Factory.createScalar("0")},
-            {Factory.createScalar("0"), Factory.createScalar("1"), Factory.createScalar("0")},
-            {Factory.createScalar("0"), Factory.createScalar("0"), Factory.createScalar("1")}
+            {Factory.createScalar("1"), Factory.createScalar("0")},
+            {Factory.createScalar("0"), Factory.createScalar("1")},
         });
         System.out.println("10. 단위행렬 생성");
-        System.out.println("기댓값: " + expectedAnswer10);
-        System.out.println(mD);
-        System.out.println("");
+        System.out.println("기댓값: \n" + expectedAnswer10);
+        System.out.println("결과: \n" + mD);
+        System.out.println(mD.equals(expectedAnswer10) ? "통과\n" : "실패\n");
 
-        // 11. 특정 위치의 요소를 지정/조회할 수 있다.
-        vA = Factory.createVector(4, Factory.createScalar("2"));
-        vA.setValue(1, Factory.createScalar("5"));
-        int idx11 = 1;
-        Scalar expectedAnswer11 = Factory.createScalar("5");
-        System.out.println("11. 특정 위치의 요소를 지정/조회할 수 있다.");
+        // 11v. (벡터) 특정 위치의 요소를 지정/조회할 수 있다.
+        vA = Factory.createVector(3, Factory.createScalar("5"));
+        Scalar[] arr3 = {Factory.createScalar("5"), Factory.createScalar("5"), Factory.createScalar("10")};
+        Vector expectedAnswer11va = Factory.createVector(arr3);
+        int idx11v = 2;
+        System.out.println("11v. (벡터) 특정 위치의 요소를 지정/조회할 수 있다.");
         System.out.println("원본 벡터: " + vA);
-        System.out.println("조회 인덱스: " + (int)(idx11+1));
-        System.out.println("기댓값: " + expectedAnswer11);
-        System.out.println("결과: " + vA.getValue(idx11));
-        System.out.println("");
+        System.out.println("지정 인덱스: " + (int)(idx11v+1) + "에 값을 10으로 지정");
+        System.out.println("기댓값: " + expectedAnswer11va);
+        vA.setValue(2, Factory.createScalar("10"));
+        System.out.println("결과: " + vA);
+        System.out.println(vA.equals(expectedAnswer11va) ? "통과\n" : "실패\n");
+
+        Scalar expectedAnswer11vb = Factory.createScalar("10");
+        System.out.println("조회 인덱스: " + (int)(idx11v+1));
+        System.out.println("기댓값: " + expectedAnswer11vb);
+        System.out.println("결과: " + vA.getValue(idx11v));
+        System.out.println(vA.getValue(idx11v).equals(expectedAnswer11vb) ? "통과\n" : "실패\n");
+
+        // 11m. (행렬) 특정 위치의 요소를 지정/조회할 수 있다.
+        mA = Factory.createIdentityMatrix(2);
+        Matrix expectedAnswer11ma = Factory.createMatrix(new Scalar[][]{
+                {Factory.createScalar("10"), Factory.createScalar("0")},
+                {Factory.createScalar("0"), Factory.createScalar("1")},
+        });
+        int idx11m = 0;
+        System.out.println("11m. (행렬) 특정 위치의 요소를 지정/조회할 수 있다.");
+        System.out.println("원본 행렬: \n" + mA);
+        System.out.println("지정 인덱스: " + (idx11m+1) + "," + (idx11m+1) + "에 10으로 지정");
+        mA.setValue(idx11m, idx11m, Factory.createScalar("10"));
+        System.out.println("기댓값: \n" + expectedAnswer11ma);
+        System.out.println("결과: \n" + mA);
+        System.out.println(mA.equals(expectedAnswer11ma) ? "통과\n" : "실패");
+
+        Scalar expectedAnswer11mb = Factory.createScalar("10");
+        System.out.println("조회 인덱스: " + (idx11m+1) + "," + (idx11m+1));
+        System.out.println("기댓값: " + expectedAnswer11mb);
+        System.out.println("결과: " + mA.getValue(idx11m, idx11m));
+        System.out.println(mA.getValue(idx11m, idx11m).equals(expectedAnswer11mb) ? "통과\n" : "실패\n");
+/*
 
         // 12. (only 스칼라) 값을 지정/조회할 수 있다.
         sA = Factory.createScalar("3.14");
@@ -754,5 +767,7 @@ public class Test {
         System.out.println(result54.equals(expectedAnswer54) ? "통과" : "실패");
         System.out.println("");
         System.out.println("끝이다 ㅎㅎ");
+
+         */
     }
 } 
