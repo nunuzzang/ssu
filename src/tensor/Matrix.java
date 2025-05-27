@@ -17,6 +17,10 @@ public interface Matrix {
     void add(Matrix other);
     //23
     void multiply(Matrix other);
+    //32
+    Matrix attachHMatrix(Matrix other);
+    //33
+    Matrix attachVMatrix(Matrix other);
     //34
     Vector getRowVector (int row);
     //35
