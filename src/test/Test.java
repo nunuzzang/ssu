@@ -175,14 +175,14 @@ public class Test {
         int idx11m = 0;
         System.out.println("11m. (행렬) 특정 위치의 요소를 지정/조회할 수 있다.");
         System.out.println("원본 행렬: \n" + mA);
-        System.out.println("지정 인덱스: " + (idx11m+1) + "," + (idx11m+1) + "에 10으로 지정");
+        System.out.println("지정 인덱스: " + (idx11m) + "," + (idx11m) + "에 10으로 지정");
         mA.setValue(idx11m, idx11m, Factory.createScalar("10"));
         System.out.println("기댓값: \n" + expectedAnswer11ma);
         System.out.println("결과: \n" + mA);
         System.out.println(mA.equals(expectedAnswer11ma) ? "통과\n" : "실패");
 
         Scalar expectedAnswer11mb = Factory.createScalar("10");
-        System.out.println("조회 인덱스: " + (idx11m+1) + "," + (idx11m+1));
+        System.out.println("조회 인덱스: " + (idx11m) + "," + (idx11m));
         System.out.println("기댓값: " + expectedAnswer11mb);
         System.out.println("결과: " + mA.getValue(idx11m, idx11m));
         System.out.println(mA.getValue(idx11m, idx11m).equals(expectedAnswer11mb) ? "통과\n" : "실패\n");
@@ -353,8 +353,7 @@ public class Test {
         System.out.println("기댓값: " + expectedAnswer19);
         sA.multiply(sMul);
         System.out.println("결과: " + sA);
-        System.out.println(sA.equals(expectedAnswer19) ? "통과" : "실패");
-        System.out.println("");
+        System.out.println(sA.equals(expectedAnswer19) ? "통과\n" : "실패\n");
 
 
         // 20. 벡터 덧셈
@@ -591,7 +590,7 @@ public class Test {
         });
         System.out.println("34. 행렬에서 특정 행을 벡터 형태로 추출");
         System.out.println("원본 행렬:\n" + mA);
-        System.out.println("추출 행 인덱스: " + (rowIdx+1));
+        System.out.println("추출 행 인덱스: " + rowIdx);
         System.out.println("기댓값: " + expectedAnswer34);
         Vector result34 = mA.getRowVector(rowIdx);
         System.out.println("결과: " + result34);
@@ -604,7 +603,7 @@ public class Test {
         });
         System.out.println("35. 행렬에서 특정 열을 벡터 형태로 추출");
         System.out.println("원본 행렬:\n" + mA);
-        System.out.println("추출 열 인덱스: " + (colIdx+1));
+        System.out.println("추출 열 인덱스: " + colIdx);
         System.out.println("기댓값: " + expectedAnswer35);
         Vector result35 = mA.getColVector(colIdx);
         System.out.println("결과: " + result35);
@@ -622,9 +621,9 @@ public class Test {
         });
         System.out.println("36.행렬은 특정 범위의 부분 행렬 추출");
         System.out.println("원본 행렬:\n" + mA);
-        System.out.println("추출 범위: (1,1)부터 (2,2)까지");
+        System.out.println("추출 범위: (0,0)부터 (2,2)까지");
         System.out.println("기댓값:\n" + expectedAnswer36);
-        Matrix result36 = mA.extractSubMatrix(0, 1, 0, 1);
+        Matrix result36 = mA.extractSubMatrix(0, 2, 0, 2);
         System.out.println("결과:\n" + result36);
         System.out.println(result36.equals(expectedAnswer36) ? "통과\n" : "실패\n");
 
@@ -635,7 +634,7 @@ public class Test {
         });
         System.out.println("37. 행렬에서 특정 하나의 행과 열을 제외한 부분 행렬");
         System.out.println("원본 행렬:\n" + mA);
-        System.out.println("제거할 행과 열: (1,1)");
+        System.out.println("제거할 행과 열: (0,0)");
         System.out.println("기댓값:\n" + expectedAnswer37);
         Matrix result37 = mA.minorSubMatrix(0, 0);
         System.out.println("결과:\n" + result37);
@@ -717,7 +716,7 @@ public class Test {
         });
         System.out.println("45. 행렬은 특정 두 행의 위치를 맞교환할 수 있다.");
         System.out.println("원본 행렬:\n" + mA);
-        System.out.println("교환할 행: 1행과 3행");
+        System.out.println("교환할 행: 0행과 2행");
         System.out.println("기댓값:\n" + expectedAnswer45);
         mA.rowSwap(0, 2);
         System.out.println("결과:\n" + mA);
@@ -731,7 +730,7 @@ public class Test {
         });
         System.out.println("46. 행렬은 특정 두 열의 위치를 맞교환할 수 있다.");
         System.out.println("원본 행렬:\n" + mA);
-        System.out.println("교환할 열: 1열과 2열");
+        System.out.println("교환할 열: 0열과 1열");
         System.out.println("기댓값:\n" + expectedAnswer46);
         mA.colSwap(0, 1);
         System.out.println("결과:\n" + mA);
@@ -746,7 +745,7 @@ public class Test {
         });
         System.out.println("47. 행렬은 특정 행에 상수배(스칼라)를 할 수 있다.");
         System.out.println("원본 행렬:\n" + mA);
-        System.out.println("곱할 행: 2행, 스칼라: 3");
+        System.out.println("곱할 행: 1행, 스칼라: 3");
         System.out.println("기댓값:\n" + expectedAnswer47);
         mA.rowMultiply(1, Factory.createScalar("3"));
         System.out.println("결과:\n" + mA);
@@ -760,7 +759,7 @@ public class Test {
         });
         System.out.println("48. 행렬은 특정 열에 상수배(스칼라)를 할 수 있다.");
         System.out.println("원본 행렬:\n" + mA);
-        System.out.println("곱할 열: 2열, 스칼라: 3");
+        System.out.println("곱할 열: 1열, 스칼라: 3");
         System.out.println("기댓값:\n" + expectedAnswer48);
         mA.colMultiply(1, Factory.createScalar("3"));
         System.out.println("결과:\n" + mA);
@@ -774,7 +773,7 @@ public class Test {
         });
         System.out.println("49. 행렬은 특정 행에 다른 행의 상수배를 더할 수 있다.");
         System.out.println("원본 행렬:\n" + mA);
-        System.out.println("대상 행: 1행, 더할 행: 3행, 스칼라: 2");
+        System.out.println("대상 행: 0행, 더할 행: 2행, 스칼라: 2");
         System.out.println("기댓값:\n" + expectedAnswer49);
         mA.rowAddOtherRow(0, 2, Factory.createScalar("2"));
         System.out.println("결과:\n" + mA);
@@ -788,7 +787,7 @@ public class Test {
         });
         System.out.println("50. 행렬은 특정 열에 다른 열의 상수배를 더할 수 있다.");
         System.out.println("원본 행렬:\n" + mA);    
-        System.out.println("대상 열: 1열, 더할 열: 3열, 스칼라: 2");
+        System.out.println("대상 열: 0열, 더할 열: 2열, 스칼라: 2");
         System.out.println("기댓값:\n" + expectedAnswer50);
         mA.colAddOtherCol(0, 2, Factory.createScalar("2"));
         System.out.println("결과:\n" + mA);
@@ -838,5 +837,7 @@ public class Test {
         Matrix result54 = mA.getInverseMatrix();
         System.out.println("역행렬:\n" + result54);
         System.out.println(result54.equals(expectedAnswer54) ? "통과\n" : "실패\n");
+
+        System.out.println("끝");
     }
 } 

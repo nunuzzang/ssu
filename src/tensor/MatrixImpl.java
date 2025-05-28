@@ -239,11 +239,9 @@ class MatrixImpl implements Matrix {
         if (colStart > colEnd) {
             throw new SizeMismatchException("시작 열 인덱스가 끝 열 인덱스보다 클 수 없다.");
         }
-
-        int subMatrixRows = rowEnd - rowStart + 1;
-        int subMatrixCols = colEnd - colStart + 1;
+        int subMatrixRows = rowEnd - rowStart;
+        int subMatrixCols = colEnd - colStart;
         Scalar[][] subMatrixElements = new Scalar[subMatrixRows][subMatrixCols];
-
         for (int i = 0; i < subMatrixRows; i++) {
             for (int j = 0; j < subMatrixCols; j++) {
                 Scalar originalScalar = elements.get(rowStart + i).get(colStart + j);
@@ -336,20 +334,18 @@ class MatrixImpl implements Matrix {
     @Override
     public Scalar trace() {
         if (!isSquare()) {
-            throw new NotSquareMatrixException("정사각 행렬이 아닙니다.");
+            throw new NotSquareMatrixException("대각요소의 합은 정사각 행렬에서만 계산이 가능합니다.");
         }
-
-        Scalar sumElements = Factory.createScalar("0");
-
-        for (int i =0; i < rowSize(); i++) {
-            Scalar diagonalElement = elements.get(i).get(i);
-            if (diagonalElement != null) {
-                sumElements.add(diagonalElement);
+        Scalar traceSum = Factory.createScalar("0");
+        for (int idx = 0; idx < rowSize(); idx++) {
+            Scalar diagonalValue = elements.get(idx).get(idx);
+            if (diagonalValue != null) {
+                traceSum.add(diagonalValue);
             } else {
-                throw new NullPointerException("null을 참조하였습니다.");
+                throw new NullPointerException("대각 원소의 값이 null이라 대각요소의 합을 계산할 수 없습니다.");
             }
         }
-        return sumElements;
+        return traceSum;
     }
     //40. 정사각 행렬 판단
     @Override
