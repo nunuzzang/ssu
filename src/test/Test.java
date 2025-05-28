@@ -17,6 +17,10 @@ public class Test {
         System.out.println("2. i 이상 j 미만의 무작위 값을 요소로하는 스칼라 생성");
         System.out.println("i = 1, j = 20");
         System.out.println("결과: " + sB + "\n");
+        boolean success2 = true;
+        double val2 = Double.parseDouble(sB.getValue());
+        if(val2 < 1 || val2 >= 20) success2 = false;
+        System.out.println(success2 ? "통과\n" : "실패\n");
 
         // 3. 지정된 하나의 값을 모든 요소의 값으로 하는 n-차원 벡터 생성
         Vector vA = Factory.createVector(3, Factory.createScalar("10"));
@@ -36,6 +40,15 @@ public class Test {
         System.out.println("4. i 이상 j 미만의 무작위 값을 요소로 하는 n-차원 벡터 생성");
         System.out.println("인자값: i=2, j=8 사이 무작위, n=6");
         System.out.println("결과: " + vB + "\n");
+        boolean success4 = true;
+        for (int i = 0; i < vB.size(); i++) {
+            double val4 = Double.parseDouble(vB.getValue(i).getValue());
+            if (val4 < 1 || val4 >= 8    ) {
+                success4 = false;
+                break;
+            }
+        }
+        System.out.println(success4 ? "통과\n" : "실패\n");
 
         // 5. 1차원 배열로부터 n-차원 벡터 생성
         Scalar[] arr = {Factory.createScalar("3"), Factory.createScalar("6"), Factory.createScalar("9")};
@@ -67,6 +80,18 @@ public class Test {
         System.out.println("7. i 이상 j 미만의 무작위 값을 요소로 하는 m x n 행렬 생성");
         System.out.println("인자값: i=2, j=4 사이 무작위, m=4, n=2");
         System.out.println("결과: \n" + mB);
+        boolean success7 = true;
+        for (int i = 0; i < mB.rowSize(); i++) {
+            for (int j = 0; j < mB.colSize(); j++) {
+                double val7 = Double.parseDouble(mB.getValue(i, j).getValue());
+                if (val7 < 2 || val7 >= 4) {
+                    success7 = false;
+                    break;
+                }
+            }
+            if (!success7) break;
+        }
+        System.out.println(success7 ? "통과\n" : "실패\n");
 
         // 8. csv 파일로부터 m x n 행렬을 생성할 수 있다.
         Matrix expectedAnswer8 = Factory.createMatrix(new Scalar[][]{
@@ -204,7 +229,12 @@ public class Test {
         System.out.println("벡터: " + vA);
         System.out.println("행렬: \n" + mA);
         System.out.println("기댓값: \n스칼라=" + expectedAnswer14_1 + ",\n벡터=" + expectedAnswer14_2 + ",\n행렬=\n" + expectedAnswer14_3);
-        System.out.println("결과: \n스칼라=" + sA + ",\n벡터=" + vA + ",\n행렬=\n" + mA);
+        try{
+            System.out.println("결과: \n스칼라=" + sA + ",\n벡터=" + vA + ",\n행렬=\n" + mA);
+            System.out.println("통과\n");
+        }catch (TensorException e){
+            System.out.println("실패\n");
+        }
 
         // 15s. (스칼라) equals() 객체의 동등성 판단
         sA = Factory.createScalar("10.24");
