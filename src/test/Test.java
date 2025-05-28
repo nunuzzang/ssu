@@ -198,39 +198,65 @@ public class Test {
         System.out.println("조회 결과: " + sA.getValue());
         System.out.println(sA.equals(expectedAnswer12) ? "통과\n" : "실패\n");
 
-        // 13. (only 벡터, 행렬) 크기 정보를 조회할 수 있다.
+        // 13v. (only 벡터) 크기 정보를 조회할 수 있다.
         vA = Factory.createVector(2, Factory.createScalar("10"));
-        mA = Factory.createMatrix(3, 3, Factory.createScalar("24"));
-        System.out.println("13. (only 벡터, 행렬) 크기 정보를 조회할 수 있다.");
+        System.out.println("13v. (only 벡터) 크기 정보를 조회할 수 있다.");
         System.out.println("원본 벡터: " + vA);
-        System.out.println("원본 행렬: \n" + mA);
         System.out.println("벡터 크기: " + 2);
-        System.out.println("행렬 행: " + 3 + ", 열: " + 3);
-        System.out.println("기댓값: 벡터 크기=2, 행렬 행=3, 열=3");
-        System.out.println("결과: " + "벡터 크기=" + vA.size() + ", 행렬 행=" + mA.rowSize() + ", 열=" + mA.colSize());
-        System.out.println((vA.size() == 2 && mA.rowSize() == 3 && mA.colSize() == 3) ? "통과\n" : "실패\n");
+        System.out.println("기댓값: 벡터 크기=2");
+        System.out.println("결과: " + "벡터 크기=" + vA.size());
+        System.out.println((vA.size() == 2) ? "통과\n" : "실패\n");
 
-        // 14. toString() 객체를 콘솔에 출력할 수 있다.
+        // 13m. (only 행렬) 크기 정보를 조회할 수 있다.
+        mA = Factory.createMatrix(3, 3, Factory.createScalar("24"));
+        System.out.println("13m. (only 벡행렬) 크기 정보를 조회할 수 있다.");
+        System.out.println("원본 행렬: \n" + mA);
+        System.out.println("행렬 행: " + 3 + ", 열: " + 3);
+        System.out.println("기댓값: 행렬 행=3, 열=3");
+        System.out.println("결과: " + "행렬 행=" + mA.rowSize() + ", 열=" + mA.colSize());
+        System.out.println((mA.rowSize() == 3 && mA.colSize() == 3) ? "통과\n" : "실패\n");
+
+        // 14s. toString() 객체를 콘솔에 출력할 수 있다.
         sA = Factory.createScalar("10.24");
-        vA = Factory.createVector(3, Factory.createScalar("10"));
-        mA = Factory.createMatrix(2, 2, Factory.createScalar("24"));
         Scalar expectedAnswer14_1 = Factory.createScalar("10.24");
-        Vector expectedAnswer14_2 = Factory.createVector(new Scalar[]{
-            Factory.createScalar("10"),
-            Factory.createScalar("10"),
-            Factory.createScalar("10")
-        });
-        Matrix expectedAnswer14_3 = Factory.createMatrix(new Scalar[][]{
-            {Factory.createScalar("24"), Factory.createScalar("24")},
-            {Factory.createScalar("24"), Factory.createScalar("24")}
-        });
-        System.out.println("14. toString() 객체를 콘솔에 출력할 수 있다.");
+        System.out.println("14s. toString() 객체를 콘솔에 출력할 수 있다.");
         System.out.println("스칼라: " + sA);
-        System.out.println("벡터: " + vA);
-        System.out.println("행렬: \n" + mA);
-        System.out.println("기댓값: \n스칼라=" + expectedAnswer14_1 + ",\n벡터=" + expectedAnswer14_2 + ",\n행렬=\n" + expectedAnswer14_3);
+        System.out.println("기댓값: " + expectedAnswer14_1);
         try{
-            System.out.println("결과: \n스칼라=" + sA + ",\n벡터=" + vA + ",\n행렬=\n" + mA);
+            System.out.println("결과: " + sA);
+            System.out.println("통과\n");
+        }catch (TensorException e){
+            System.out.println("실패\n");
+        }
+
+        // 14v. toString() 객체를 콘솔에 출력할 수 있다.
+        vA = Factory.createVector(3, Factory.createScalar("10"));
+        Vector expectedAnswer14_2 = Factory.createVector(new Scalar[]{
+                Factory.createScalar("10"),
+                Factory.createScalar("10"),
+                Factory.createScalar("10")
+        });
+        System.out.println("14v. toString() 객체를 콘솔에 출력할 수 있다.");
+        System.out.println("벡터: " + vA);
+        System.out.println("기댓값: " + expectedAnswer14_2);
+        try{
+            System.out.println("결과: " + vA);
+            System.out.println("통과\n");
+        }catch (TensorException e){
+            System.out.println("실패\n");
+        }
+
+        // 14m. toString() 객체를 콘솔에 출력할 수 있다.
+        mA = Factory.createMatrix(2, 2, Factory.createScalar("24"));
+        Matrix expectedAnswer14_3 = Factory.createMatrix(new Scalar[][]{
+                {Factory.createScalar("24"), Factory.createScalar("24")},
+                {Factory.createScalar("24"), Factory.createScalar("24")}
+        });
+        System.out.println("14m. toString() 객체를 콘솔에 출력할 수 있다.");
+        System.out.println("행렬: \n" + mA);
+        System.out.println("기댓값:\n" + expectedAnswer14_3);
+        try{
+            System.out.println("결과:\n" + mA);
             System.out.println("통과\n");
         }catch (TensorException e){
             System.out.println("실패\n");
@@ -252,20 +278,20 @@ public class Test {
                 Factory.createScalar("24"),
                 Factory.createScalar("24")
         });
-        System.out.println("15s. (벡터) equals() 객체의 동등성 판단");
+        System.out.println("15v. (벡터) equals() 객체의 동등성 판단");
         System.out.println("비교 대상 1: " + vA);
         System.out.println("비교 대상 2: " + v2);
         System.out.println("기댓값: 같다");
         System.out.println("결과: " + (vA.equals(v2) ? "같다" : "다르다"));
         System.out.println(vA.equals(v2) ? "통과\n" : "실패\n");
 
-        // 16m. (행렬) equals() 객체의 동등성 판단
+        // 15m. (행렬) equals() 객체의 동등성 판단
         mA = Factory.createIdentityMatrix(2);
         Matrix m2 = Factory.createMatrix(new Scalar[][]{
                 {Factory.createScalar("1"), Factory.createScalar("0")},
                 {Factory.createScalar("0"), Factory.createScalar("1")},
         });
-        System.out.println("15s. (행렬) equals() 객체의 동등성 판단");
+        System.out.println("15m. (행렬) equals() 객체의 동등성 판단");
         System.out.println("비교 대상 1: \n" + mA);
         System.out.println("비교 대상 2: \n" + m2);
         System.out.println("기댓값: 같다");
@@ -297,7 +323,7 @@ public class Test {
         System.out.println("17s. (스칼라) clone() 객체 복제");
         System.out.println("기댓값: " + expectedAnswer17s);
         System.out.println("복제된 스칼라: " + s4);
-        System.out.println(s4.equals(expectedAnswer17s) ? "통과\n" : "실패\n");
+        System.out.println(s4.equals(expectedAnswer17s) && s4 != sA? "통과\n" : "실패\n");
 
         // 17v. (벡터) clone() 객체 복제
         vA = Factory.createVector(3, Factory.createScalar("24"));
@@ -311,9 +337,7 @@ public class Test {
         System.out.println("17v. (벡터) clone() 객체 복제");
         System.out.println("기댓값: " + expectedAnswer17v);
         System.out.println("복제된 벡터: " + v3);
-        System.out.println(v3.equals(expectedAnswer17v) ? "통과\n" : "실패\n");
-
-
+        System.out.println(v3.equals(expectedAnswer17v)  && v3 != vA? "통과\n" : "실패\n");
 
         // 17m. (행렬) clone() 객체 복제
         mA = Factory.createMatrix(2, 2, Factory.createScalar("10"));
@@ -326,9 +350,7 @@ public class Test {
         System.out.println("17m. (행렬) clone() 객체 복제");
         System.out.println("기댓값:\n" + expectedAnswer17m);
         System.out.println("복제된 행렬:\n" + m3);
-        System.out.println(m3.equals(expectedAnswer17m) ? "통과\n" : "실패\n");
-
-
+        System.out.println(m3.equals(expectedAnswer17m) && m3 != mA ? "통과\n" : "실패\n");
 
         // 18. 스칼라 덧셈
         sA = Factory.createScalar("10");
@@ -341,7 +363,6 @@ public class Test {
         sA.add(sAdd);
         System.out.println("결과: " + sA);
         System.out.println(sA.equals(expectedAnswer18) ? "통과\n" : "실패\n");
-
 
         // 19. 스칼라 곱셈
         sA = Factory.createScalar("10");

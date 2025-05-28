@@ -45,8 +45,12 @@ class VectorImpl implements Vector {
     //14
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("[ ");
-        for (Scalar s : elements) sb.append(s.getValue()).append(" ");
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < size(); i++) {
+            sb.append(elements.get(i).getValue());
+            if (i < size() - 1) sb.append(", ");
+        }
+
         sb.append("]");
         return sb.toString();
     }

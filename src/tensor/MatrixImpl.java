@@ -112,11 +112,15 @@ class MatrixImpl implements Matrix {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (List<Scalar> row : elements) {
-            for (Scalar s : row) {
-                sb.append(s.toString()).append(" ");
+        for (int i = 0; i < rowSize(); i++) {
+            sb.append("[");
+            List<Scalar> row = elements.get(i);
+            for (int j = 0; j < row.size(); j++) {
+                sb.append(row.get(j).getValue().toString());
+                if (j < row.size() - 1) sb.append(", ");
             }
-            sb.append("\n");
+            sb.append("]");
+            if (i < rowSize() - 1) sb.append("\n");
         }
         return sb.toString();
     }
