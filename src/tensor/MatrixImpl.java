@@ -189,69 +189,13 @@ class MatrixImpl implements Matrix {
     //32
     @Override
     public Matrix attachHMatrix(Matrix other){
-        if (rowSize() != other.rowSize()){
-            throw new SizeMismatchException("두 행렬의 행수가 같지 않습니다.");
-        }
-        int newRows = rowSize();
-        int newCols = colSize() + other.colSize();
-        Scalar[][] newElements = new Scalar[newRows][newCols];
-
-        for (int i = 0; i < newRows; i++) {
-            for (int j = 0; j < colSize(); j++) {
-                Scalar currentScalar = getValue(i, j);
-                if (currentScalar != null) {
-                    newElements[i][j] = currentScalar.clone();
-                } else {
-                    newElements[i][j] = null;
-                }
-            }
-        }
-
-        for (int i = 0; i < newRows; i++) {
-            for (int j = 0; j < other.colSize(); j++) {
-                Scalar otherScalar = other.getValue(i, j);
-                if (otherScalar != null) {
-                    newElements[i][colSize() + j] = otherScalar.clone();
-                } else {
-                    newElements[i][colSize() + j] = null;
-                }
-            }
-        }
-        return new MatrixImpl(newElements);
+        return attachHMatrix(this, other);
     }
 
     //33
     @Override
     public Matrix attachVMatrix(Matrix other){
-        if (colSize() != other.colSize()) {
-            throw new SizeMismatchException("두 행렬의 열 수가 같지 않습니다.");
-        }
-        int newRows = rowSize() + other.rowSize();
-        int newCols = colSize();
-        Scalar[][] newElements = new Scalar[newRows][newCols];
-
-        for (int i = 0; i < rowSize(); i++) {
-            for (int j = 0; j < newCols; j++) {
-                Scalar currentScalar = getValue(i, j);
-                if (currentScalar != null) {
-                    newElements[i][j] = currentScalar.clone();
-                } else {
-                    newElements[i][j] = null;
-                }
-            }
-        }
-
-        for (int i = 0; i < other.rowSize(); i++) {
-            for (int j = 0; j < newCols; j++) {
-                Scalar otherScalar = other.getValue(i, j);
-                if (otherScalar != null) {
-                    newElements[rowSize() + i][j] = otherScalar.clone();
-                } else {
-                    newElements[rowSize() + i][j] = null;
-                }
-            }
-        }
-        return new MatrixImpl(newElements);
+        return attachVMatrix(this, other);
     }
     //34
     @Override
@@ -832,10 +776,66 @@ class MatrixImpl implements Matrix {
     }
     //32
     static Matrix attachHMatrix(Matrix m1, Matrix m2){
-        return m1.attachHMatrix(m2);
+        if (m1.rowSize() != m2.rowSize()){
+            throw new SizeMismatchException("두 행렬의 행수가 같지 않습니다.");
+        }
+        int newRows = m1.rowSize();
+        int newCols = m1.colSize() + m2.colSize();
+        Scalar[][] newElements = new Scalar[newRows][newCols];
+
+        for (int i = 0; i < newRows; i++) {
+            for (int j = 0; j < m1.colSize(); j++) {
+                Scalar currentScalar = m1.getValue(i, j);
+                if (currentScalar != null) {
+                    newElements[i][j] = currentScalar.clone();
+                } else {
+                    newElements[i][j] = null;
+                }
+            }
+        }
+
+        for (int i = 0; i < newRows; i++) {
+            for (int j = 0; j < m2.colSize(); j++) {
+                Scalar otherScalar = m2.getValue(i, j);
+                if (otherScalar != null) {
+                    newElements[i][m1.colSize() + j] = otherScalar.clone();
+                } else {
+                    newElements[i][m1.colSize() + j] = null;
+                }
+            }
+        }
+        return new MatrixImpl(newElements);
     }
     //33
     static Matrix attachVMatrix(Matrix m1, Matrix m2){
-        return m1.attachVMatrix(m2);
+        if (m1.colSize() != m2.colSize()) {
+            throw new SizeMismatchException("두 행렬의 열 수가 같지 않습니다.");
+        }
+        int newRows = m1.rowSize() + m2.rowSize();
+        int newCols = m1.colSize();
+        Scalar[][] newElements = new Scalar[newRows][newCols];
+
+        for (int i = 0; i < m1.rowSize(); i++) {
+            for (int j = 0; j < newCols; j++) {
+                Scalar currentScalar = m1.getValue(i, j);
+                if (currentScalar != null) {
+                    newElements[i][j] = currentScalar.clone();
+                } else {
+                    newElements[i][j] = null;
+                }
+            }
+        }
+
+        for (int i = 0; i < m2.rowSize(); i++) {
+            for (int j = 0; j < newCols; j++) {
+                Scalar otherScalar = m2.getValue(i, j);
+                if (otherScalar != null) {
+                    newElements[m1.rowSize() + i][j] = otherScalar.clone();
+                } else {
+                    newElements[m1.rowSize() + i][j] = null;
+                }
+            }
+        }
+        return new MatrixImpl(newElements);
     }
 }
