@@ -1,7 +1,5 @@
 package tensor;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 
 class VectorImpl implements Vector {
@@ -50,7 +48,6 @@ class VectorImpl implements Vector {
             sb.append(elements.get(i).getValue());
             if (i < size() - 1) sb.append(", ");
         }
-
         sb.append("]");
         return sb.toString();
     }
@@ -58,7 +55,7 @@ class VectorImpl implements Vector {
     @Override
     public boolean equals(Object obj) {
         if(this == obj) return true;
-        if (!(obj instanceof Vector compareObj)) return false;
+        if (!(obj instanceof Vector compareObj)) throw new ClassCastException("주어진 객체가 벡터가 아닙니다.");
         if (this.size() != compareObj.size()) return false;
         for (int i = 0; i < size(); i++) {
             if(!(elements.get(i).equals(compareObj.getValue(i)))) return false;
@@ -77,7 +74,7 @@ class VectorImpl implements Vector {
     //20
     @Override
     public void add(Vector other) {
-        if (size() != other.size()) throw new SizeMismatchException("벡터 덧셈 조건에 맞지않습니다.");
+        if (size() != other.size()) throw new SizeMismatchException("벡터 덧셈 조건에 맞지않습니다. (조건: 벡터의 길이가 같아야 함)");
         for (int i = 0; i < size(); i++) {
             getValue(i).add(other.getValue(i));
         }
@@ -90,24 +87,24 @@ class VectorImpl implements Vector {
     //30
     @Override
     public Matrix toVerticalMatrix() {
-        Scalar[][] arr = new Scalar[size()][1];
+        Scalar[][] newElements = new Scalar[size()][1];
         for (int i = 0; i < size(); i++) {
-            arr[i][0] = getValue(i).clone();
+            newElements[i][0] = getValue(i).clone();
         }
-        return new MatrixImpl(arr);
+        return new MatrixImpl(newElements);
     }
     //31
     @Override
     public Matrix toHorizontalMatrix() {
-        Scalar[][] arr = new Scalar[1][size()];
+        Scalar[][] newElements = new Scalar[1][size()];
         for (int i = 0; i < size(); i++) {
-            arr[0][i] = getValue(i).clone();
+            newElements[0][i] = getValue(i).clone();
         }
-        return new MatrixImpl(arr);
+        return new MatrixImpl(newElements);
     }
     //26
     static Vector add(Vector v1, Vector v2){
-        if(v1.size() != v2.size()) throw new SizeMismatchException("벡터의 길이가 다릅니다.");
+        if(v1.size() != v2.size()) throw new SizeMismatchException("벡터 덧셈 조건에 맞지않습니다. (조건: 벡터의 길이가 같아야 함)");
         Vector result = v1.clone();
         result.add(v2);
         return result;

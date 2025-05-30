@@ -55,7 +55,7 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Scalar)) return false; // ClassCastException 에러로 보내도될듯
+        if (!(obj instanceof Scalar)) throw new ClassCastException("주어진 객체가 스칼라가 아닙니다.");
         String compareObj1 = ((Scalar) obj).getValue();
         BigDecimal compareObj2 = new BigDecimal(compareObj1);
         return value.compareTo(compareObj2) == 0;
