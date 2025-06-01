@@ -8,7 +8,7 @@ class MatrixImpl implements Matrix {
 
     //06
     MatrixImpl(int m, int n, Scalar val) {
-        if (m <= 0 || n <= 0) throw new IllegalArgumentException("잘못된 인자를 입력하였습니다.");
+        if (m <= 0 || n <= 0) throw new IllegalArgumentException("행렬의 크기를 잘못 설정하셨습니다.");
         elements = new ArrayList<>();
         for (int i = 0; i < m; i++) {
             List<Scalar> row = new ArrayList<>();
@@ -55,8 +55,8 @@ class MatrixImpl implements Matrix {
         elements = new ArrayList<>();
         for (Scalar[] rw : arr) {
             List<Scalar> row = new ArrayList<>();
-            for (Scalar s : rw) {
-                row.add(s.clone());
+            for (Scalar scal : rw) {
+                row.add(scal.clone());
             }
             elements.add(row);
         }
@@ -128,7 +128,7 @@ class MatrixImpl implements Matrix {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Matrix)) return false;
+        if (!(obj instanceof Matrix)) throw new ClassCastException("주어진 객체가 행렬 아닙니다.");
         Matrix other = (Matrix) obj;
         if (this.rowSize() != other.rowSize() || this.colSize() != other.colSize()) return false;
 
@@ -142,10 +142,10 @@ class MatrixImpl implements Matrix {
     //17
     @Override
     public Matrix clone() {
-        Scalar[][] copyElements = new Scalar[this.rowSize()][this.colSize()];
-        for (int i = 0; i < this.rowSize(); i++) {
-            for (int j = 0; j < this.colSize(); j++) {
-                copyElements[i][j] = this.getValue(i, j).clone();
+        Scalar[][] copyElements = new Scalar[rowSize()][colSize()];
+        for (int i = 0; i < rowSize(); i++) {
+            for (int j = 0; j < colSize(); j++) {
+                copyElements[i][j] = getValue(i, j).clone();
             }
         }
         return new MatrixImpl(copyElements);
@@ -155,8 +155,8 @@ class MatrixImpl implements Matrix {
     public void add(Matrix other) {
         if (this.rowSize() != other.rowSize() || this.colSize() != other.colSize())
             throw new SizeMismatchException("행렬 덧셈 조건이 맞지 않습니다.");
-        for (int i = 0; i < rowSize(); i++) {
-            for (int j = 0; j < colSize(); j++) {
+        for (int i = 0; i < this.rowSize(); i++) {
+            for (int j = 0; j < this.colSize(); j++) {
                 this.getValue(i, j).add(other.getValue(i, j));
             }
         }
@@ -193,18 +193,74 @@ class MatrixImpl implements Matrix {
     //32
     @Override
     public Matrix attachHMatrix(Matrix other){
-        return attachHMatrix(this, other);
+        if (rowSize() != other.rowSize()){
+            throw new SizeMismatchException("두 행렬의 행수가 같지 않습니다.");
+        }
+        int newRows = rowSize();
+        int newCols = colSize() + other.colSize();
+        Scalar[][] newElements = new Scalar[newRows][newCols];
+
+        for (int i = 0; i < newRows; i++) {
+            for (int j = 0; j < colSize(); j++) {
+                Scalar currentScalar = getValue(i, j);
+                if (currentScalar != null) {
+                    newElements[i][j] = currentScalar.clone();
+                } else {
+                    newElements[i][j] = null;
+                }
+            }
+        }
+
+        for (int i = 0; i < newRows; i++) {
+            for (int j = 0; j < other.colSize(); j++) {
+                Scalar otherScalar = other.getValue(i, j);
+                if (otherScalar != null) {
+                    newElements[i][colSize() + j] = otherScalar.clone();
+                } else {
+                    newElements[i][colSize() + j] = null;
+                }
+            }
+        }
+        return new MatrixImpl(newElements);
     }
 
     //33
     @Override
     public Matrix attachVMatrix(Matrix other){
-        return attachVMatrix(this, other);
+        if (colSize() != other.colSize()) {
+            throw new SizeMismatchException("두 행렬의 열 수가 같지 않습니다.");
+        }
+        int newRows = rowSize() + other.rowSize();
+        int newCols = colSize();
+        Scalar[][] newElements = new Scalar[newRows][newCols];
+
+        for (int i = 0; i < rowSize(); i++) {
+            for (int j = 0; j < newCols; j++) {
+                Scalar currentScalar = getValue(i, j);
+                if (currentScalar != null) {
+                    newElements[i][j] = currentScalar.clone();
+                } else {
+                    newElements[i][j] = null;
+                }
+            }
+        }
+
+        for (int i = 0; i < other.rowSize(); i++) {
+            for (int j = 0; j < newCols; j++) {
+                Scalar otherScalar = other.getValue(i, j);
+                if (otherScalar != null) {
+                    newElements[rowSize() + i][j] = otherScalar.clone();
+                } else {
+                    newElements[rowSize() + i][j] = null;
+                }
+            }
+        }
+        return new MatrixImpl(newElements);
     }
     //34
     @Override
     public Vector getRowVector(int row) {
-        if(row < 0 || row >= this.rowSize()) {
+        if(row < 0 || row >= rowSize()) {
             throw new IndexOutOfBoundsException("행 인덱스가 범위를 벗어났습니다.");
         }
         Scalar[] result = new Scalar[colSize()];
@@ -342,7 +398,7 @@ class MatrixImpl implements Matrix {
         }
         Scalar traceSum = Factory.createScalar("0");
         for (int idx = 0; idx < rowSize(); idx++) {
-            Scalar diagonalValue = elements.get(idx).get(idx);
+            Scalar diagonalValue = getValue(idx, idx);
             if (diagonalValue != null) {
                 traceSum.add(diagonalValue);
             } else {
@@ -369,7 +425,7 @@ class MatrixImpl implements Matrix {
         for (int i = 0; i < rowSize(); i++) {
             for (int j = 0; j < colSize(); j++) {
                 if(i > j) {
-                    Scalar currentElement = elements.get(i).get(j);
+                    Scalar currentElement = getValue(i, j);
                     if(currentElement == null || !currentElement.equals(zeroScalar)) return false;
                 }
             }
@@ -389,7 +445,7 @@ class MatrixImpl implements Matrix {
         for (int i = 0; i < rowSize(); i++) {
             for (int j = 0; j < colSize(); j++) {
                 if(i < j) {
-                    Scalar currentElement = elements.get(i).get(j);
+                    Scalar currentElement = getValue(i, j);
                     if(currentElement == null || !currentElement.equals(zeroScalar)) return false;
                 }
             }
@@ -409,7 +465,7 @@ class MatrixImpl implements Matrix {
 
         for (int i = 0; i < rowSize(); i++) {
             for (int j = 0; j < colSize(); j++) {
-                Scalar currentElement = elements.get(i).get(j);
+                Scalar currentElement = getValue(i, j);
 
                 if(currentElement == null) return false;
                 if(i == j) {
@@ -429,7 +485,7 @@ class MatrixImpl implements Matrix {
 
         for (int i = 0; i < rowSize(); i++) {
             for (int j = 0; j < colSize(); j++) {
-                Scalar currentElement = elements.get(i).get(j);
+                Scalar currentElement = getValue(i, j);
                 if(currentElement == null || !currentElement.equals(zeroScalar)) return false;
             }
         }
@@ -438,120 +494,93 @@ class MatrixImpl implements Matrix {
     //45 두 행의 위치 맞교환
     @Override
     public void rowSwap(int row1, int row2) {
-        if (row1 < 0 || row1 >= rowSize() || row2 < 0 || row2 >= rowSize()) {
-            throw new IndexOutOfBoundsException("행 인덱스가 범위를 벗어났습니다.");
-        }
+        if (row1 < 0 || row1 >= rowSize() || row2 < 0 || row2 >= rowSize()) throw new IndexOutOfBoundsException("행 인덱스가 범위를 벗어났습니다.");
         if (row1 == row2) return;
-
-        List<Scalar> temp = elements.get(row1);
+        List<Scalar> tempRow = elements.get(row1);
         elements.set(row1, elements.get(row2));
-        elements.set(row2, temp);
+        elements.set(row2, tempRow);
     }
     //46 두 열의 위치 맞교환
     @Override
     public void colSwap(int col1, int col2) {
-        if (col1 < 0 || col1 >= colSize() || col2 < 0 || col2 >= colSize()){
-            throw new IndexOutOfBoundsException("열 인덱스가 범위를 벗어났습니다.");
-        }
+        if (col1 < 0 || col1 >= colSize() || col2 < 0 || col2 >= colSize()) throw new IndexOutOfBoundsException("열 인덱스가 범위를 벗어났습니다.");
         if (col1 == col2) return;
-
-        for (int i = 0; i < rowSize(); i++) {
-            List<Scalar> currentRow = elements.get(i);
-
-            Scalar temp = currentRow.get(col1);
+        for (int idx = 0; idx < rowSize(); idx++) {
+            List<Scalar> currentRow = elements.get(idx);
+            Scalar tempCol = currentRow.get(col1);
             currentRow.set(col1, currentRow.get(col2));
-            currentRow.set(col2, temp);
+            currentRow.set(col2, tempCol);
         }
     }
     //47 특정 행에 상수배(스칼라)
     @Override
     public void rowMultiply(int row, Scalar val) {
-        if (row < 0 || row >= rowSize()) {
-            throw new IndexOutOfBoundsException("행 인덱스가 범위를 벗어났습니다.");
-        }
-        if (val == null) {
-            throw new NullPointerException("null을 참조하였습니다.");
-        }
+        if (row < 0 || row >= rowSize()) throw new IndexOutOfBoundsException("행 인덱스가 범위를 벗어났습니다.");
+        if (val == null) throw new NullPointerException("곱할 스칼라 값은 null일 수 없습니다.");
 
-        List<Scalar> rowElements = this.elements.get(row);
+        List<Scalar> currentRow = elements.get(row);
 
-        for (int i = 0; i < colSize(); i++) {
-            Scalar currentElement = rowElements.get(i);
+        for (int idx = 0; idx < colSize(); idx++) {
+            Scalar currentElement = currentRow.get(idx);
             
             if (currentElement != null) {
                 currentElement.multiply(val);
             } else {
-                throw new NullPointerException("null을 참조하였습니다.");
+                throw new NullPointerException("null은 곱셈을 할 수 없습니다.");
             }
         }
     }
     //48 특정 열에 상수배(스칼라)
     @Override
     public void colMultiply(int col, Scalar val) {
-        if (col < 0 || col >= colSize()) {
-            throw new IndexOutOfBoundsException("열 인덱스가 범위를 벗어났습니다.");
-        }
-        if (val == null) {
-            throw new NullPointerException("null을 참조하였습니다.");
-        }
-        for (int i = 0; i < rowSize(); i++) {
-            Scalar currentElement = elements.get(i).get(col);
+        if (col < 0 || col >= colSize()) throw new IndexOutOfBoundsException("열 인덱스가 범위를 벗어났습니다.");
+        if (val == null) throw new NullPointerException("곱할 스칼라 값은 null일 수 없습니다.");
+
+        for (int idx = 0; idx < rowSize(); idx++) {
+            Scalar currentElement = elements.get(idx).get(col);
 
             if (currentElement != null) {
                 currentElement.multiply(val);
             } else {
-                throw new NullPointerException("null을 참조하였습니다.");
+                throw new NullPointerException("null은 곱셈을 할 수 없습니다.");
             }
         }
     }
     //49
     @Override
     public void rowAddOtherRow(int targetRow, int sourceRow, Scalar val) {
-        if (targetRow < 0 || targetRow >= rowSize()) {
-            throw new IndexOutOfBoundsException("target 행 인덱스가 범위를 벗어났습니다.");
-        }
-        if (sourceRow < 0 || sourceRow >= rowSize()) {
-            throw new IndexOutOfBoundsException("source 행 인덱스가 범위를 벗어났습니다.");
-        }
-        if (val == null) {
-            throw new NullPointerException("곱할 스칼라 값은 null일 수 없습니다.");
-        }
+        if (targetRow < 0 || targetRow >= rowSize()) throw new IndexOutOfBoundsException("target 행 인덱스가 범위를 벗어났습니다.");
+        if (sourceRow < 0 || sourceRow >= rowSize()) throw new IndexOutOfBoundsException("source 행 인덱스가 범위를 벗어났습니다.");
+        if (val == null) throw new NullPointerException("곱할 스칼라 값은 null일 수 없습니다.");
         List<Scalar> targetRowElements = elements.get(targetRow);
         List<Scalar> sourceRowElements = elements.get(sourceRow);
 
-        for (int j = 0; j < colSize(); j++) {
-            Scalar targetElement = targetRowElements.get(j);
-            Scalar sourceElement = sourceRowElements.get(j);
+        for (int idx = 0; idx < colSize(); idx++) {
+            Scalar targetElement = targetRowElements.get(idx);
+            Scalar sourceElement = sourceRowElements.get(idx);
 
             if (targetElement == null || sourceElement == null) {
-                if (sourceElement == null)
-                    throw new NullPointerException("source 행의 요소가 null입니다.");
-                if (targetElement == null)
-                    throw new NullPointerException("target 행의 요소가 null입니다.");
+                if (sourceElement == null) throw new NullPointerException("source 행의 요소가 null입니다.");
+                if (targetElement == null) throw new NullPointerException("target 행의 요소가 null입니다.");
             }
 
-            Scalar term = sourceElement.clone();
-            term.multiply(val);
-            targetElement.add(term);
+            Scalar tempElement = sourceElement.clone();
+            tempElement.multiply(val);
+            targetElement.add(tempElement);
         }
     }
     //50
     @Override
     public void colAddOtherCol(int targetCol, int sourceCol, Scalar val) {
-        if (targetCol < 0 || targetCol >= colSize()) {
-            throw new IndexOutOfBoundsException("target 열 인덱스가 범위를 벗어났습니다.");
-        }
-        if (sourceCol < 0 || sourceCol >= colSize()) {
-            throw new IndexOutOfBoundsException("source 열 인덱스가 범위를 벗어났습니다.");
-        }
-        if (val == null) {
-            throw new NullPointerException("곱할 스칼라 값은 null일 수 없습니다.");
-        }
-        for (int i = 0; i < rowSize(); i++) {
-            List<Scalar> currentRow = this.elements.get(i);
+        if (targetCol < 0 || targetCol >= colSize()) throw new IndexOutOfBoundsException("target 열 인덱스가 범위를 벗어났습니다.");
+        if (sourceCol < 0 || sourceCol >= colSize()) throw new IndexOutOfBoundsException("source 열 인덱스가 범위를 벗어났습니다.");
+        if (val == null) throw new NullPointerException("곱할 스칼라 값은 null일 수 없습니다.");
 
-            Scalar targetElement = currentRow.get(targetCol);
-            Scalar sourceElement = currentRow.get(sourceCol);
+        for (int idx = 0; idx < rowSize(); idx++) {
+            List<Scalar> currentRowElements = this.elements.get(idx);
+
+            Scalar targetElement = currentRowElements.get(targetCol);
+            Scalar sourceElement = currentRowElements.get(sourceCol);
 
             if (targetElement == null || sourceElement == null) {
                 if (sourceElement == null) throw new NullPointerException("source 열의 요소가 null입니다.");
@@ -776,66 +805,10 @@ class MatrixImpl implements Matrix {
     }
     //32
     static Matrix attachHMatrix(Matrix m1, Matrix m2){
-        if (m1.rowSize() != m2.rowSize()){
-            throw new SizeMismatchException("두 행렬의 행수가 같지 않습니다.");
-        }
-        int newRows = m1.rowSize();
-        int newCols = m1.colSize() + m2.colSize();
-        Scalar[][] newElements = new Scalar[newRows][newCols];
-
-        for (int i = 0; i < newRows; i++) {
-            for (int j = 0; j < m1.colSize(); j++) {
-                Scalar currentScalar = m1.getValue(i, j);
-                if (currentScalar != null) {
-                    newElements[i][j] = currentScalar.clone();
-                } else {
-                    newElements[i][j] = null;
-                }
-            }
-        }
-
-        for (int i = 0; i < newRows; i++) {
-            for (int j = 0; j < m2.colSize(); j++) {
-                Scalar otherScalar = m2.getValue(i, j);
-                if (otherScalar != null) {
-                    newElements[i][m1.colSize() + j] = otherScalar.clone();
-                } else {
-                    newElements[i][m1.colSize() + j] = null;
-                }
-            }
-        }
-        return new MatrixImpl(newElements);
+        return m1.attachHMatrix(m2);
     }
     //33
     static Matrix attachVMatrix(Matrix m1, Matrix m2){
-        if (m1.colSize() != m2.colSize()) {
-            throw new SizeMismatchException("두 행렬의 열 수가 같지 않습니다.");
-        }
-        int newRows = m1.rowSize() + m2.rowSize();
-        int newCols = m1.colSize();
-        Scalar[][] newElements = new Scalar[newRows][newCols];
-
-        for (int i = 0; i < m1.rowSize(); i++) {
-            for (int j = 0; j < newCols; j++) {
-                Scalar currentScalar = m1.getValue(i, j);
-                if (currentScalar != null) {
-                    newElements[i][j] = currentScalar.clone();
-                } else {
-                    newElements[i][j] = null;
-                }
-            }
-        }
-
-        for (int i = 0; i < m2.rowSize(); i++) {
-            for (int j = 0; j < newCols; j++) {
-                Scalar otherScalar = m2.getValue(i, j);
-                if (otherScalar != null) {
-                    newElements[m1.rowSize() + i][j] = otherScalar.clone();
-                } else {
-                    newElements[m1.rowSize() + i][j] = null;
-                }
-            }
-        }
-        return new MatrixImpl(newElements);
+        return m1.attachVMatrix(m2);
     }
 }
