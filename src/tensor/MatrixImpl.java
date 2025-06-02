@@ -1,6 +1,7 @@
 package tensor;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.*;
 
 class MatrixImpl implements Matrix {
@@ -749,50 +750,64 @@ class MatrixImpl implements Matrix {
     //54
     @Override
     public Matrix getInverseMatrix() {
-        if(!isSquare()) {
-            throw new NotSquareMatrixException("정사각 행렬만 역행렬을 구할 수 있습니다.");
+        if (!isSquare()) {
+            throw new SizeMismatchException("정사각 행렬만 역행렬을 구할 수 있습니다.");
         }
         int n = rowSize();
-        Scalar[][] identity = new Scalar[n][n];
+        if (n == 0) {
+            throw new SizeMismatchException("0x0 행렬의 역행렬은 정의되지 않습니다.");
+        }
+
+        Scalar determinantValue = this.getDeterminant();
+
+        BigDecimal detBd = new BigDecimal(determinantValue.getValue());
+        if (detBd.compareTo(BigDecimal.ZERO) == 0) {
+            throw new SizeMismatchException("역행렬이 존재하지 않습니다 (행렬식이 0입니다).");
+        }
+
+        Scalar[][] cofactorMatrixData = new Scalar[n][n];
+        Scalar alternatingSignBase = Factory.createScalar("-1");
+
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                identity[i][j] = new ScalarImpl(i == j ? "1" : "0");
-            }
-        }
-        Matrix aug = new MatrixImpl(n, 2 * n, new ScalarImpl("0"));
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                aug.setValue(i, j, getValue(i, j).clone());
-                aug.setValue(i, j + n, identity[i][j].clone());
-            }
-        }
-        for (int i = 0; i < n; i++) {
-            Scalar diag = aug.getValue(i, i).clone();
-            if (diag.equals(new ScalarImpl("0"))) throw new ArithmeticException("역행렬이 존재하지 않습니다.");
-            for (int j = 0; j < 2 * n; j++) {
-                Scalar val = aug.getValue(i, j).clone();
-                val = new ScalarImpl((new java.math.BigDecimal(val.getValue()).divide(new java.math.BigDecimal(diag.getValue()), java.math.MathContext.DECIMAL128)).toPlainString());
-                aug.setValue(i, j, val);
-            }
-            for (int k = 0; k < n; k++) {
-                if (k == i) continue;
-                Scalar factor = aug.getValue(k, i).clone();
-                for (int j = 0; j < 2 * n; j++) {
-                    Scalar val = aug.getValue(k, j).clone();
-                    Scalar sub = aug.getValue(i, j).clone();
-                    sub.multiply(factor);
-                    val = new ScalarImpl((new java.math.BigDecimal(val.getValue()).subtract(new java.math.BigDecimal(sub.getValue()), java.math.MathContext.DECIMAL128)).toPlainString());
-                    aug.setValue(k, j, val);
+                Matrix minorMat = this.minorSubMatrix(i, j);
+                Scalar minorDet = minorMat.getDeterminant();
+
+                Scalar sign = Factory.createScalar("1");
+                if ((i + j) % 2 != 0) {
+                    sign.multiply(alternatingSignBase);
                 }
+
+                cofactorMatrixData[i][j] = minorDet;
+                cofactorMatrixData[i][j].multiply(sign);
             }
         }
-        Scalar[][] inv = new Scalar[n][n];
+        Matrix cofactorMatrix = new MatrixImpl(cofactorMatrixData);
+
+        Matrix adjugateMatrix = cofactorMatrix.transposeMatrix();
+
+        BigDecimal oneBd = BigDecimal.ONE;
+        Scalar oneOverDeterminant;
+        try {
+            BigDecimal resultBd = oneBd.divide(detBd, java.math.MathContext.DECIMAL128);
+            oneOverDeterminant = Factory.createScalar(resultBd.toPlainString());
+        } catch (ArithmeticException e) {
+            throw new SizeMismatchException("역행렬 계산 중 스칼라 나눗셈 오류가 발생했습니다.");
+        }
+
+        Scalar[][] inverseMatrixVal = new Scalar[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                inv[i][j] = aug.getValue(i, j + n).clone();
+                Scalar adjElement = adjugateMatrix.getValue(i, j);
+                if (adjElement == null) {
+                    throw new NullPointerException("수반 행렬의 요소가 null입니다.");
+                }
+                inverseMatrixVal[i][j] = adjElement.clone();
+                inverseMatrixVal[i][j].multiply(oneOverDeterminant);
             }
         }
-        return new MatrixImpl(inv);
+
+        return new MatrixImpl(inverseMatrixVal);
     }
     //28
     static Matrix add(Matrix m1, Matrix m2){
