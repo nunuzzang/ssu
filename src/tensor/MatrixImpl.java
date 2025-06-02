@@ -287,10 +287,10 @@ class MatrixImpl implements Matrix {
     //36
     @Override
     public Matrix extractSubMatrix(int rowStart, int rowEnd, int colStart, int colEnd) {
-        if (rowStart < 0 || rowStart >= rowSize() ||
-                rowEnd < 0 || rowEnd >= rowSize() ||
-                colStart < 0 || colStart >= colSize() ||
-                colEnd < 0 || colEnd >= colSize()) {
+        if (rowStart < 0 || rowStart > rowSize() ||
+                rowEnd < 0 || rowEnd > rowSize() ||
+                colStart < 0 || colStart > colSize() ||
+                colEnd < 0 || colEnd > colSize()) {
             throw new IndexOutOfBoundsException("부분 행렬 인덱스가 범위를 벗어났습니다.");
         }
         if (rowStart > rowEnd) {
@@ -687,61 +687,64 @@ class MatrixImpl implements Matrix {
     @Override
     public Scalar getDeterminant() {
         if (!isSquare()) {
-            throw new NotSquareMatrixException("행렬식은 정사각 행렬에서만 구할 수 있습니다.");
+            throw new SizeMismatchException("행렬식은 정사각 행렬에서만 구할 수 있습니다.");
         }
-        if (rowSize() == 0) {
-            throw new SizeMismatchException("0x0 행렬의 행렬식은 정의되지 않습니다.");
+        int n = rowSize();
+
+        if (n == 0) {
+            throw new SizeMismatchException("0x0 행렬의 행렬식은 지원하지 않습니다.");
         }
 
-        if (rowSize() == 1) {
-            Scalar element = elements.get(0).get(0);
-            if(element == null) throw new NullPointerException("null을 참조하였습니다.");
+        if (n == 1) {
+            Scalar element = this.getValue(0, 0);
+            if (element == null) {
+                throw new NullPointerException("1x1 행렬의 요소가 null입니다.");
+            }
             return element.clone();
         }
 
-        if (rowSize() == 2) {
-            Scalar a = elements.get(0).get(0);
-            Scalar b = elements.get(0).get(1);
-            Scalar c = elements.get(1).get(0);
-            Scalar d = elements.get(1).get(1);
+        if (n == 2) {
+            Scalar a = this.getValue(0, 0);
+            Scalar b = this.getValue(0, 1);
+            Scalar c = this.getValue(1, 0);
+            Scalar d = this.getValue(1, 1);
 
             if (a == null || b == null || c == null || d == null) {
-                throw new NullPointerException("null을 참조하였습니다.");
+                throw new NullPointerException("2x2 행렬의 요소 중 null 값이 있습니다.");
             }
 
-            Scalar ad = a.clone();
-            ad.multiply(d);
-            Scalar bc = b.clone();
-            bc.multiply(c);
+            Scalar temp_ad = a.clone();
+            temp_ad.multiply(d.clone());
+            Scalar temp_bc = b.clone();
+            temp_bc.multiply(c.clone());
 
-            Scalar negOne = Factory.createScalar("-1");
-            Scalar termBcNegated = bc.clone();
-            termBcNegated.multiply(negOne);
-            ad.add(termBcNegated);
-            return ad;
+            Scalar minusOne = Factory.createScalar("-1");
+            temp_bc.multiply(minusOne);
+
+            temp_ad.add(temp_bc);
+            return temp_ad;
         }
 
-        Scalar totalDeterminant = Factory.createScalar("0");
-        Scalar sign = Factory.createScalar("1");
+        Scalar determinantSum = Factory.createScalar("0");
+        Scalar flippedSign = Factory.createScalar("1");
 
         for (int j = 0; j < colSize(); j++) {
-            Scalar elementA0j = elements.get(0).get(j);
-            if (elementA0j == null) {
-                throw new NullPointerException("null을 참조하였습니다.");
+            Scalar elementInFirstRow = this.getValue(0, j);
+            if (elementInFirstRow == null) {
+                throw new NullPointerException("행렬 요소가 null입니다.");
             }
 
-            Matrix minorMatrix = minorSubMatrix(0, j);
-            Scalar minorDeterminant = minorMatrix.getDeterminant();
+            Matrix minorMat = this.minorSubMatrix(0, j);
+            Scalar minorDet = minorMat.getDeterminant();
 
-            Scalar term = elementA0j.clone();
-            term.multiply(minorDeterminant);
-            term.multiply(sign);
+            Scalar term = elementInFirstRow.clone();
+            term.multiply(minorDet);
+            term.multiply(flippedSign);
 
-            totalDeterminant.add(term);
-
-            sign.multiply(Factory.createScalar("-1"));
+            determinantSum.add(term);
+            flippedSign.multiply(Factory.createScalar("-1"));
         }
-        return totalDeterminant;
+        return determinantSum;
     }
     //54
     @Override
